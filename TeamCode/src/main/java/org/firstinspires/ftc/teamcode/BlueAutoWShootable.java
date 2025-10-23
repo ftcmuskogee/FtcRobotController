@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -56,9 +56,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Robot: Autonomous - Just gotta MOVE!", group="Robot")
 // @Disabled
-public class RedAutoWShootable extends LinearOpMode {
+public class BlueAutoWShootable extends LinearOpMode {
 
-    /* Declare OpMode members. */
+    // Declare OpMode members.
     private DcMotor frontLeftDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
@@ -97,7 +97,6 @@ public class RedAutoWShootable extends LinearOpMode {
         shooterMotor.setDirection(DcMotor.Direction.FORWARD); // untested
         shooterReloader.setDirection(Servo.Direction.FORWARD); // untested
 
-
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
@@ -108,13 +107,13 @@ public class RedAutoWShootable extends LinearOpMode {
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Turn towards goal (untested)
-        frontLeftDrive.setPower(TURN_SPEED);
-        backLeftDrive.setPower(TURN_SPEED);
-        frontRightDrive.setPower(-TURN_SPEED);
-        backRightDrive.setPower(-TURN_SPEED);
+        frontLeftDrive.setPower(-TURN_SPEED);
+        backLeftDrive.setPower(-TURN_SPEED);
+        frontRightDrive.setPower(TURN_SPEED);
+        backRightDrive.setPower(TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.25)) {
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
             telemetry.addData("Path", "Go Reload: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -136,10 +135,10 @@ public class RedAutoWShootable extends LinearOpMode {
         }
 
         // Move to reload zone
-        frontLeftDrive.setPower(-TURN_SPEED);
-        backLeftDrive.setPower(TURN_SPEED);
-        frontRightDrive.setPower(TURN_SPEED);
-        backRightDrive.setPower(-TURN_SPEED);
+        frontLeftDrive.setPower(TURN_SPEED);
+        backLeftDrive.setPower(-TURN_SPEED);
+        frontRightDrive.setPower(-TURN_SPEED);
+        backRightDrive.setPower(TURN_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 2.5)) {
@@ -160,10 +159,10 @@ public class RedAutoWShootable extends LinearOpMode {
         }
 
         // Move back to launch line
-        frontLeftDrive.setPower(TURN_SPEED);
-        backLeftDrive.setPower(-TURN_SPEED);
-        frontRightDrive.setPower(-TURN_SPEED);
-        backRightDrive.setPower(TURN_SPEED);
+        frontLeftDrive.setPower(-TURN_SPEED);
+        backLeftDrive.setPower(TURN_SPEED);
+        frontRightDrive.setPower(TURN_SPEED);
+        backRightDrive.setPower(-TURN_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 2.5)) {
