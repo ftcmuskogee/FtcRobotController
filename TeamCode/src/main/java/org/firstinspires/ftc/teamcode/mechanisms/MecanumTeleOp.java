@@ -3,6 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
         @Override
@@ -13,8 +15,13 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+<<<<<<< Updated upstream
+            DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "Shooter");
+            Servo shooterReloader = hardwareMap.get(Servo.class, "Reloader");
+=======
             DcMotor shooterMotor = hardwareMap.dcMotor.get("SM");
-            DcMotor shooterReloader = HARDWAREmAP.dcMotor.get("SR")
+            DcMotor shooterReloader = hardwareMap.dcMotor.get("SR");
+>>>>>>> Stashed changes
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
