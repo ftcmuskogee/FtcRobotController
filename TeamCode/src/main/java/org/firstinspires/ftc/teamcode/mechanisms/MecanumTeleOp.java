@@ -16,7 +16,7 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
             DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            CRServo shooterReloader = hardwareMap.get(CRServo.class, "RS");
+            CRServo shooterReloader = hardwareMap.get(CRServo.class, "servo");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -46,14 +46,14 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
-                if (gamepad2.a){
+                if (gamepad2.right_trigger != 0){
                     shooterMotor.setPower(1);
                 }
 
-                if (gamepad2.b){
+                if (gamepad2.right_trigger == 0){
                     shooterMotor.setPower(0);
                 }
-                
+
                 frontLeftMotor.setPower(frontLeftPower);
                 backLeftMotor.setPower(backLeftPower);
                 frontRightMotor.setPower(frontRightPower);
