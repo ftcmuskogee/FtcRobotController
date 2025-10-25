@@ -3,9 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.CRServo;
-
-import org.firstinspires.ftc.teamcode.Servo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
@@ -18,7 +16,7 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
             DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            CRServo shooterReloader = hardwareMap.get(CRServo.class, "servo");
+            Servo shooterReloader = hardwareMap.get(Servo.class, "servo");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -48,9 +46,10 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
+                if (gamepad2.right_trigger != 0) {
                     shooterMotor.setPower(1);
                 }
-
+                if (gamepad2.right_trigger == 0) {
                     shooterMotor.setPower(0);
                 }
 
