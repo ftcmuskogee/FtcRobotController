@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -17,6 +18,9 @@ public class MecanumDrive {
         backLeftMotor = hwMap.get(DcMotor.class, "LB");
         froRightMotor = hwMap.get(DcMotor.class, "RF");
         backRightMotor = hwMap.get(DcMotor.class, "RB");
+        DcMotor shooterMotor = hwMap.get(DcMotor.class, "Shooter");
+        CRServo shooterReloader = hwMap.get(CRServo.class, "Reloader");
+
 
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);

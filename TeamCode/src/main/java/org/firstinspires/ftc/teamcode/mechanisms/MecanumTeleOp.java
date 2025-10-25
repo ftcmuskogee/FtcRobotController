@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
@@ -15,13 +15,8 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
-<<<<<<< Updated upstream
-            DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "Shooter");
-            Servo shooterReloader = hardwareMap.get(Servo.class, "Reloader");
-=======
-            DcMotor shooterMotor = hardwareMap.dcMotor.get("SM");
-            DcMotor shooterReloader = hardwareMap.dcMotor.get("SR");
->>>>>>> Stashed changes
+            DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
+            CRServo shooterReloader = hardwareMap.get(CRServo.class, "RS");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -38,7 +33,7 @@ public class MecanumTeleOp extends LinearOpMode {
             if (isStopRequested()) return;
 
             while (opModeIsActive()) {
-                double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+                double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
                 double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
                 double rx = gamepad1.right_stick_x;
 
