@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.teamcode.Servo;
+
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
         @Override
@@ -46,11 +48,9 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
-                if (gamepad2.right_trigger != 0){
                     shooterMotor.setPower(1);
                 }
 
-                if (gamepad2.right_trigger == 0){
                     shooterMotor.setPower(0);
                 }
 
