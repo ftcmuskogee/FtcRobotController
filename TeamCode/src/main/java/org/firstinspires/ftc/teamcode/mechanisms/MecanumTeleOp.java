@@ -46,6 +46,14 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
+                if (gamepad2.a){
+                    shooterMotor.setPower(1);
+                }
+
+                if (gamepad2.b){
+                    shooterMotor.setPower(0);
+                }
+                
                 frontLeftMotor.setPower(frontLeftPower);
                 backLeftMotor.setPower(backLeftPower);
                 frontRightMotor.setPower(frontRightPower);
