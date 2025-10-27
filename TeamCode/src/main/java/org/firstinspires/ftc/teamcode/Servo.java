@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
         @Override
         public void loop() {
-            if(gamepad2.yWasPressed()){   // WasPressed means holding the button down won't repeat the loop every tick, just every press.
+            if(gamepad2.yWasPressed()){ // WasPressed means holding the button down won't repeat the loop every tick, just every press.
                 servo.setPosition(0);
 //            servo.setPower(1);
                 sleep(500);
