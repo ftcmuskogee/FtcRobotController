@@ -27,6 +27,7 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            shooterReloader.setPosition(0.0);
 
             waitForStart();
 
@@ -48,8 +49,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 if (gamepad2.right_trigger != 0) {
                     shooterMotor.setPower(1);
-                }
-                if (gamepad2.right_trigger == 0) {
+                } else if (gamepad2.right_trigger == 0) {
                     shooterMotor.setPower(0);
                 }
 
