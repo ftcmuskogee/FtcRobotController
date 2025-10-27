@@ -54,7 +54,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 }
 
                 if (gamepad2.aWasPressed()){
-                    servo.setPosition(.5);
+                    servo.setPosition(-.5);
                     sleep(500);
                     servo.setPosition(0.0);
                 }
