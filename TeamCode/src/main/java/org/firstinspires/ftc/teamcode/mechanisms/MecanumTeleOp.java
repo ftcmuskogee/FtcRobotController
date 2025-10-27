@@ -53,6 +53,12 @@ public class MecanumTeleOp extends LinearOpMode {
                     shooterMotor.setPower(0);
                 }
 
+                if (gamepad2.aWasPressed()){
+                    servo.setPosition(.5);
+                    sleep(500);
+                    servo.setPosition(0.0);
+                }
+
                 frontLeftMotor.setPower(frontLeftPower);
                 backLeftMotor.setPower(backLeftPower);
                 frontRightMotor.setPower(frontRightPower);
