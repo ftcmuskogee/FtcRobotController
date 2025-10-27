@@ -27,7 +27,7 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            servo.setPosition(0.0);
+            servo.setPosition(0.05);
 
             waitForStart();
 
@@ -54,9 +54,9 @@ public class MecanumTeleOp extends LinearOpMode {
                 }
 
                 if (gamepad2.aWasPressed()){
-                    servo.setPosition(-.5);
-                    sleep(500);
                     servo.setPosition(0.0);
+                    sleep(500);
+                    servo.setPosition(0.05);
                 }
 
                 frontLeftMotor.setPower(frontLeftPower);
