@@ -28,6 +28,12 @@ public class MecanumTeleOp extends LinearOpMode {
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
+            // If no driver input, the robot won't move
+            frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
             waitForStart();
 
             if (isStopRequested()) return;
