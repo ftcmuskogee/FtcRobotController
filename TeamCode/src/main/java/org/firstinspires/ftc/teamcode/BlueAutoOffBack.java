@@ -95,7 +95,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-        servo.setPosition(0.0);
+        servo.setPosition(0.05);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -140,9 +140,9 @@ public class BlueAutoOffBack extends LinearOpMode {
         shooterMotor.setPower(1);
         for (int i = 1; i < 3; i++) {
             sleep(500); // untested
-            servo.setPosition(0.5);
-            sleep(500);
             servo.setPosition(0);
+            sleep(500);
+            servo.setPosition(0.05);
         }
         shooterMotor.setPower(0);
 
@@ -163,7 +163,6 @@ public class BlueAutoOffBack extends LinearOpMode {
             telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-
 
         // Stop
         frontLeftDrive.setPower(0);
