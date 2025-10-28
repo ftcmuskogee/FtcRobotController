@@ -27,11 +27,12 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            servo.setPosition(0.05);
 
             waitForStart();
 
             if (isStopRequested()) return;
+
+            servo.setPosition(0.05);   // Ensures that the servo corrects itself AFTER the robot can move without fouls (start of TeleOp)
 
             while (opModeIsActive()) {
                 double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
