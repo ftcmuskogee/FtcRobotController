@@ -70,8 +70,8 @@ public class BlueAutoOffGoal extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
+    static final double     FORWARD_SPEED = 0.6; // For directions from the left joystick.
+    static final double     TURN_SPEED    = 0.5; // For rotations from the right joystick.
 
     @Override
     public void runOpMode() {
