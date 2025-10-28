@@ -69,14 +69,44 @@ public class RedAutoOffBack extends LinearOpMode {
         while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
+
+        }
+        //on launch line
+        frontLeftMotor.setPower(TURN_SPEED);
+        frontRightMotor.setPower(-TURN_SPEED);
+        backLeftMotor.setPower(TURN_SPEED);
+        backRightMotor.setPower(-TURN_SPEED);
+
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+            telemetry.addData("Path", "Turning to goal: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
         }
 
+            shooterMotor.setPower(1);
+            for(int i = 1; i < 3 ; i++) {
+                sleep(500); //untested
+                servo.setPosition(0);
+                sleep(500);
+                servo.setPosition(0.05);
+            }
+            shooterMotor.setPower(0);
+
+            resetRuntime();
+        while (opModeIsActive() && (runtime.seconds()<0.5)) {
+
+        }
+
+        frontLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(-FORWARD_SPEED);
+        backLeftMotor.setPower(-FORWARD_SPEED);
+        backRightMotor.setPower(FORWARD_SPEED);
+
+        sleep(1000);
+
+
         
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        sleep(500);
+
 
     }
 
