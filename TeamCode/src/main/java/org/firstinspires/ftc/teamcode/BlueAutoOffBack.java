@@ -107,7 +107,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Wait for arena to be clear
-        while (opModeIsActive() && (runtime.seconds() < 10.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 5.0)) {
             telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -174,6 +174,6 @@ public class BlueAutoOffBack extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
-        // current code = 16 second auto
+        // current code = 11 second auto
     }
 }
