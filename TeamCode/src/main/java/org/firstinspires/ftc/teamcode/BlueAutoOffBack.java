@@ -59,10 +59,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class BlueAutoOffBack extends LinearOpMode {
 
     // Declare OpMode members.
-    private DcMotor frontLeftDrive = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
 
     private DcMotor shooterMotor = null;
     private Servo servo = null;
@@ -77,10 +77,10 @@ public class BlueAutoOffBack extends LinearOpMode {
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "FL");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BL");
-        frontRightDrive  = hardwareMap.get(DcMotor.class, "FR");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BR");
+        frontLeftMotor = hardwareMap.get(DcMotor.class, "FL");
+        backLeftMotor = hardwareMap.get(DcMotor.class, "BL");
+        frontRightMotor = hardwareMap.get(DcMotor.class, "FR");
+        backRightMotor = hardwareMap.get(DcMotor.class, "BR");
 
         // Initialize the shooting motor and reload-kickstand servo.
         shooterMotor = hardwareMap.get(DcMotor.class, "SM");
@@ -89,10 +89,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
         servo.setPosition(0.05);
@@ -113,10 +113,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         }
 
         // Move to launch line
-        frontLeftDrive.setPower(FORWARD_SPEED);
-        backLeftDrive.setPower(FORWARD_SPEED);
-        frontRightDrive.setPower(FORWARD_SPEED);
-        backRightDrive.setPower(FORWARD_SPEED);
+        frontLeftMotor.setPower(FORWARD_SPEED);
+        backLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(FORWARD_SPEED);
+        backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
@@ -125,10 +125,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         }
 
         // Turn towards goal
-        frontLeftDrive.setPower(-TURN_SPEED);
-        backLeftDrive.setPower(-TURN_SPEED);
-        frontRightDrive.setPower(TURN_SPEED);
-        backRightDrive.setPower(TURN_SPEED);
+        frontLeftMotor.setPower(-TURN_SPEED);
+        backLeftMotor.setPower(-TURN_SPEED);
+        frontRightMotor.setPower(TURN_SPEED);
+        backRightMotor.setPower(TURN_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
@@ -153,10 +153,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         }
 
         // Move off of launch line (left strafe)
-        frontLeftDrive.setPower(-FORWARD_SPEED);
-        backLeftDrive.setPower(FORWARD_SPEED);
-        frontRightDrive.setPower(FORWARD_SPEED);
-        backRightDrive.setPower(-FORWARD_SPEED);
+        frontLeftMotor.setPower(-FORWARD_SPEED);
+        backLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(FORWARD_SPEED);
+        backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
@@ -165,10 +165,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         }
 
         // Stop
-        frontLeftDrive.setPower(0);
-        backLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        backRightDrive.setPower(0);
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
