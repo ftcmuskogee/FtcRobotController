@@ -2,12 +2,29 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 @Autonomous
-public class OptionalRed  extends LinearOpMode {
+public class RedAutoOffBack extends LinearOpMode {
+
+    // Declare OpMode members.
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
+
+    private DcMotor shooterMotor = null;
+    private Servo servo = null;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
+
+    static final double     FORWARD_SPEED = 0.6; // For directions from the left joystick.
+    static final double     TURN_SPEED    = 0.5; // For rotations from the right joystick.
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -30,19 +47,33 @@ public class OptionalRed  extends LinearOpMode {
         shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         servo.setPosition(0.05);
 
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Ready to run");
+        telemetry.update();
+
         waitForStart();
 
-        sleep(5000)
+        //sleep(5000); also works, but this is more clear
+        while (opModeIsActive() && (runtime.seconds() < 5.0)) {   // 5000 milliseconds
+            telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
 
+        // Move to launch line
+        frontLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(FORWARD_SPEED);
+        backLeftMotor.setPower(FORWARD_SPEED);
+        backRightMotor.setPower(FORWARD_SPEED);
 
-        frontLeftMotor.setPower(0.6);
-        frontRightMotor.setPower(-0.6);
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        sleep(5000);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
+            telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
         
-        frontLeftMotor.setPower(0.6);
-        frontRightMotor.setPower(0.6);
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
         sleep(500);

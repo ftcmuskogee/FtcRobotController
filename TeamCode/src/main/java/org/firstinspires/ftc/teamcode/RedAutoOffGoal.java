@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 @Autonomous
-public class redMain extends LinearOpMode {
+public class RedAutoOffGoal extends LinearOpMode {
     @Override
         public void runOpMode() throws InterruptedException {
             // Declare our motors
