@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.hardware.Servo;
                 servo.setPosition(0);
 //            servo.setPower(1);
                 sleep(500);
-                servo.setPosition(0.05);
+                servo.setPosition(0.04);
 //            servo.setPower(-1);
             }
 //        servo.setPower(0);
