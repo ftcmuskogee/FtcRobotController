@@ -174,6 +174,6 @@ public class BlueAutoOffBack extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
-        // current code = 11 second auto
+        // current code = 12 second auto
     }
 }
