@@ -22,18 +22,8 @@ public class ServoPositions extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-
-            // show current position when CIRCLE is pressed
-            if (gamepad1.aWasPressed()) {
-                telemetry.addData("0 value is...", shooterReloader.getPosition());
-                telemetry.update();
-            }
-
-            // show current position when SQUARE is pressed
-            if (gamepad1.bWasPressed()) {
-                telemetry.addData("1 value is...", shooterReloader.getPosition());
-                telemetry.update();
-            }
+            telemetry.addData("Servo position is...", shooterReloader.getPosition());
+            telemetry.update();
         }
     }
 
