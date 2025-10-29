@@ -76,15 +76,12 @@ public class BlueAutoOffBack extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // Initialize the drive system variables.
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "FL");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "BL");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "FR");
-        backRightMotor = hardwareMap.get(DcMotor.class, "BR");
-
-        // Initialize the shooting motor and reload-kickstand servo.
-        shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-        servo = hardwareMap.get(Servo.class, "servo");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+        DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
+        Servo servo = hardwareMap.get(Servo.class, "servo");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.

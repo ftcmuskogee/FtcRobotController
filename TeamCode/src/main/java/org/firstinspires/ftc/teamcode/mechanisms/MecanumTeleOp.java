@@ -39,7 +39,7 @@ public class MecanumTeleOp extends LinearOpMode {
             if (isStopRequested()) return;
 
             // Ensures that the servo corrects itself AFTER the robot can move without fouls (at start of TeleOp)
-            servo.setPosition(0.05);
+            servo.setPosition(0.04);
 
             while (opModeIsActive()) {
                 double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -63,8 +63,15 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 if (gamepad2.aWasPressed()){
                     servo.setPosition(0.0);
-                    sleep(500);
-                    servo.setPosition(0.05);
+                    sleep(250);
+                    servo.setPosition(0.04);
+                }
+
+                if (gamepad2.bWasPressed()){
+                    servo.setPosition(0.0);
+                }
+                if (gamepad2.xWasPressed()){
+                    servo.setPosition(0.3);
                 }
 
                 frontLeftMotor.setPower(frontLeftPower);
