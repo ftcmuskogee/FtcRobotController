@@ -164,7 +164,7 @@ public class BlueAutoOffGoal extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);
+        sleep(100);
 
         // current code = 6 second auto
     }
