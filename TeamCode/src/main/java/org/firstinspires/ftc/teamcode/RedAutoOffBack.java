@@ -77,8 +77,6 @@ public class RedAutoOffBack extends LinearOpMode {
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
         sleep(100);
 
         //on launch line
@@ -98,13 +96,13 @@ public class RedAutoOffBack extends LinearOpMode {
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
         sleep(100);
 
+        // Shoot 3 artifacts
         shooterMotor.setPower(1);
-        sleep(500);
-        for (int i = 1; i < 3 ; i++) {
+        sleep(250);
+        for (int i = 1; i < 3; i++) {
+            sleep(250);
             servo.setPosition(0);
             sleep(250);
             servo.setPosition(0.04);
@@ -117,6 +115,7 @@ public class RedAutoOffBack extends LinearOpMode {
             telemetry.update();
         }
 
+        // Move off launch line (strafe right)
         frontLeftMotor.setPower(FORWARD_SPEED);
         frontRightMotor.setPower(-FORWARD_SPEED);
         backLeftMotor.setPower(-FORWARD_SPEED);

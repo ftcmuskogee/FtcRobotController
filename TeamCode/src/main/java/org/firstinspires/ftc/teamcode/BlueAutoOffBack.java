@@ -86,10 +86,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
         servo.setPosition(0.04);
@@ -126,8 +126,6 @@ public class BlueAutoOffBack extends LinearOpMode {
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
         sleep(100);
 
         // Turn towards goal
@@ -147,14 +145,13 @@ public class BlueAutoOffBack extends LinearOpMode {
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
         sleep(100);
 
-        // Shoot !3! artifacts
+        // Shoot 3 artifacts
         shooterMotor.setPower(1);
-        sleep(500);
+        sleep(250);
         for (int i = 1; i < 3; i++) {
+            sleep(250);
             servo.setPosition(0);
             sleep(250);
             servo.setPosition(0.04);
