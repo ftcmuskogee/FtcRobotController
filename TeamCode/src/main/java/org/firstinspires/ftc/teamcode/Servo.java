@@ -16,15 +16,16 @@ import com.qualcomm.robotcore.hardware.Servo;
         public void init() {
             servo =hardwareMap.get(Servo.class,"servo");
 //        servo = hardwareMap.get(CRServo.class, "servo");
+            servo.setPosition(0.04);
         }
 
         @Override
         public void loop() {
-            if(gamepad2.y){
-                servo.setPosition(.5);
-//            servo.setPower(1);
-                sleep(500);
+            if(gamepad2.yWasPressed()){ // WasPressed means holding the button down won't repeat the loop every tick, just every press.
                 servo.setPosition(0);
+//            servo.setPower(1);
+                sleep(250);
+                servo.setPosition(0.04);
 //            servo.setPower(-1);
             }
 //        servo.setPower(0);

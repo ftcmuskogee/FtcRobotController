@@ -54,48 +54,45 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Robot: Autonomous - Just gotta MOVE!", group="Robot")
+@Autonomous(name = "Blue Auto - Optional", group = "Blue")
 // @Disabled
-public class BlueAutoWShootable extends LinearOpMode {
+public class BlueAutoOffBack extends LinearOpMode {
 
     // Declare OpMode members.
-    private DcMotor frontLeftDrive = null;
-    private DcMotor backLeftDrive = null;
-    private DcMotor frontRightDrive = null;
-    private DcMotor backRightDrive = null;
+    private DcMotor frontLeftMotor = null;
+    private DcMotor backLeftMotor = null;
+    private DcMotor frontRightMotor = null;
+    private DcMotor backRightMotor = null;
 
     private DcMotor shooterMotor = null;
-    private Servo shooterReloader = null;
+    private Servo servo = null;
 
     private ElapsedTime     runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
+    static final double     FORWARD_SPEED = 0.6; // For directions from the left joystick.
+    static final double     TURN_SPEED    = 0.5; // For rotations from the right joystick.
 
     @Override
     public void runOpMode() {
 
-        // Initialize the drive system variables.
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "FL");
-        backLeftDrive = hardwareMap.get(DcMotor.class, "BL");
-        frontRightDrive  = hardwareMap.get(DcMotor.class, "FR");
-        backRightDrive = hardwareMap.get(DcMotor.class, "BR");
-
-        // Initialize the shooting motor and reload-kickstand servo.
-        shooterMotor = hardwareMap.get(DcMotor.class, "Shooter");
-        shooterReloader = hardwareMap.get(Servo.class, "Reloader");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+        DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
+        Servo servo = hardwareMap.get(Servo.class, "servo");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
-        frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        shooterMotor.setDirection(DcMotor.Direction.FORWARD); // untested
-        shooterReloader.setDirection(Servo.Direction.FORWARD); // untested
+        shooterMotor.setDirection(DcMotor.Direction.FORWARD);
+        servo.setPosition(0.04);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -106,81 +103,92 @@ public class BlueAutoWShootable extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
-        // Turn towards goal (untested)
-        frontLeftDrive.setPower(-TURN_SPEED);
-        backLeftDrive.setPower(-TURN_SPEED);
-        frontRightDrive.setPower(TURN_SPEED);
-        backRightDrive.setPower(TURN_SPEED);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path", "Go Reload: %4.1f S Elapsed", runtime.seconds());
+        // Wait for arena to be clear
+        while (opModeIsActive() && (runtime.seconds() < 5.0)) {   // 5000 milliseconds
+            telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        // Shoot 3 artifacts
+        // Move to launch line
+        frontLeftMotor.setPower(FORWARD_SPEED);
+        backLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(FORWARD_SPEED);
+        backRightMotor.setPower(FORWARD_SPEED);
+
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
+            telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        // Stop
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(100);
+
+        // Turn towards goal
+        frontLeftMotor.setPower(-TURN_SPEED);
+        backLeftMotor.setPower(-TURN_SPEED);
+        frontRightMotor.setPower(TURN_SPEED);
+        backRightMotor.setPower(TURN_SPEED);
+
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+            telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+        // Stop
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(100);
+
+        // Shoot !3! artifacts
         shooterMotor.setPower(1);
+        sleep(500);
         for (int i = 1; i < 3; i++) {
-            sleep(30);
-            shooterReloader.setPosition(0); // untested
-            sleep(10); // untested
-            shooterReloader.setPosition(1); // untested
+            servo.setPosition(0);
+            sleep(250);
+            servo.setPosition(0.04);
         }
         shooterMotor.setPower(0);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+        while (opModeIsActive() && (runtime.seconds() < 3.0)) {   // 3000 milliseconds
             telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
 
-        // Move to reload zone
-        frontLeftDrive.setPower(TURN_SPEED);
-        backLeftDrive.setPower(-TURN_SPEED);
-        frontRightDrive.setPower(-TURN_SPEED);
-        backRightDrive.setPower(TURN_SPEED);
+        // Move off of launch line (left strafe)
+        frontLeftMotor.setPower(-FORWARD_SPEED);
+        backLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(FORWARD_SPEED);
+        backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.5)) {
-            telemetry.addData("Path", "Go Reload: %4.1f S Elapsed", runtime.seconds());
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+            telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-
-        // Stop (wait to be reloaded)
-        frontLeftDrive.setPower(0);
-        backLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        backRightDrive.setPower(0);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 8.0)) {
-            telemetry.addData("Path", "Reloading...: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-        // Move back to launch line
-        frontLeftDrive.setPower(-TURN_SPEED);
-        backLeftDrive.setPower(TURN_SPEED);
-        frontRightDrive.setPower(TURN_SPEED);
-        backRightDrive.setPower(-TURN_SPEED);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 2.5)) {
-            telemetry.addData("Path", "Moving to Launch Line: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
 
         // Stop
-        frontLeftDrive.setPower(0);
-        backLeftDrive.setPower(0);
-        frontRightDrive.setPower(0);
-        backRightDrive.setPower(0);
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);
+        sleep(100);
 
-        // current code = 18 second auto
+        // current code = 12 second auto
     }
 }

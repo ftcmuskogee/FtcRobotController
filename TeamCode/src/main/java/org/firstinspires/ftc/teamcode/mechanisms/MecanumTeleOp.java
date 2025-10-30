@@ -16,7 +16,7 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
             DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            Servo shooterReloader = hardwareMap.get(Servo.class, "servo");
+            Servo servo = hardwareMap.get(Servo.class, "servo");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -27,11 +27,19 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            shooterReloader.setPosition(0.0);
+
+            // If no driver input, the robot won't move
+            frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             waitForStart();
 
             if (isStopRequested()) return;
+
+            // Ensures that the servo corrects itself AFTER the robot can move without fouls (at start of TeleOp)
+            servo.setPosition(0.04);
 
             while (opModeIsActive()) {
                 double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -51,6 +59,19 @@ public class MecanumTeleOp extends LinearOpMode {
                     shooterMotor.setPower(1);
                 } else if (gamepad2.right_trigger == 0) {
                     shooterMotor.setPower(0);
+                }
+
+                if (gamepad2.aWasPressed()){
+                    servo.setPosition(0.0);
+                    sleep(250);
+                    servo.setPosition(0.04);
+                }
+
+                if (gamepad2.bWasPressed()){
+                    servo.setPosition(0.0);
+                }
+                if (gamepad2.xWasPressed()){
+                    servo.setPosition(0.3);
                 }
 
                 frontLeftMotor.setPower(frontLeftPower);
