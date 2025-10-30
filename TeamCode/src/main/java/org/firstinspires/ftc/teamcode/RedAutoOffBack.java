@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous
+@Autonomous(name = "Red Auto - Optional", group = "Red")
 public class RedAutoOffBack extends LinearOpMode {
 
     // Declare OpMode members.
@@ -71,6 +71,16 @@ public class RedAutoOffBack extends LinearOpMode {
             telemetry.update();
 
         }
+        // Stop
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(100);
+
         //on launch line
         frontLeftMotor.setPower(TURN_SPEED);
         frontRightMotor.setPower(-TURN_SPEED);
@@ -82,19 +92,29 @@ public class RedAutoOffBack extends LinearOpMode {
             telemetry.addData("Path", "Turning to goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        // Stop
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
 
-            shooterMotor.setPower(1);
-            for(int i = 1; i < 3 ; i++) {
-                sleep(500); //untested
-                servo.setPosition(0);
-                sleep(500);
-                servo.setPosition(0.05);
-            }
-            shooterMotor.setPower(0);
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(100);
 
-            resetRuntime();
+        shooterMotor.setPower(1);
+        for (int i = 1; i < 3 ; i++) {
+            sleep(500); //untested
+            servo.setPosition(0);
+            sleep(500);
+            servo.setPosition(0.05);
+        }
+        shooterMotor.setPower(0);
+
+        resetRuntime();
         while (opModeIsActive() && (runtime.seconds()<0.5)) {
-
+            telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
         }
 
         frontLeftMotor.setPower(FORWARD_SPEED);
@@ -102,7 +122,22 @@ public class RedAutoOffBack extends LinearOpMode {
         backLeftMotor.setPower(-FORWARD_SPEED);
         backRightMotor.setPower(FORWARD_SPEED);
 
-        sleep(1000);
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+            telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+
+        // Stop
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(100);
+
+        // current code = 12 second auto
 
 
         

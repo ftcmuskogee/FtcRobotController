@@ -114,6 +114,15 @@ public class BlueAutoOffGoal extends LinearOpMode {
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        // Stop
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+
+        telemetry.addData("Path", "Complete");
+        telemetry.update();
+        sleep(100);
 
         // Shoot !3! artifacts
         shooterMotor.setPower(1);
@@ -152,7 +161,7 @@ public class BlueAutoOffGoal extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);
+        sleep(100);
 
         // current code = 6 second auto
     }
