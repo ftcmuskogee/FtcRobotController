@@ -15,6 +15,7 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+
             DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
             Servo servo = hardwareMap.get(Servo.class, "servo");
 
@@ -26,6 +27,7 @@ public class MecanumTeleOp extends LinearOpMode {
             backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             // If no driver input, the robot won't move

@@ -76,12 +76,12 @@ public class BlueAutoOffGoal extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
-        DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-        Servo servo = hardwareMap.get(Servo.class, "servo");
+        frontLeftMotor = hardwareMap.dcMotor.get("LF");
+        backLeftMotor = hardwareMap.dcMotor.get("LB");
+        frontRightMotor = hardwareMap.dcMotor.get("RF");
+        backRightMotor = hardwareMap.dcMotor.get("RB");
+        shooterMotor = hardwareMap.get(DcMotor.class, "SM");
+        servo = hardwareMap.get(Servo.class, "servo");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -125,7 +125,7 @@ public class BlueAutoOffGoal extends LinearOpMode {
         // Shoot 3 artifacts
         shooterMotor.setPower(1);
         sleep(250);
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             sleep(250);
             servo.setPosition(0);
             sleep(250);

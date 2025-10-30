@@ -44,6 +44,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         servo.setPosition(0.04);
 
@@ -102,7 +103,7 @@ public class RedAutoOffBack extends LinearOpMode {
         // Shoot 3 artifacts
         shooterMotor.setPower(1);
         sleep(250);
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             sleep(250);
             servo.setPosition(0);
             sleep(250);

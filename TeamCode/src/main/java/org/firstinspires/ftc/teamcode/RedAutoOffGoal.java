@@ -30,10 +30,10 @@ public class RedAutoOffGoal extends LinearOpMode {
         public void runOpMode() {
 
             // Initialize the drive system variables.
-            DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
-            DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
-            DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
-            DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+            frontLeftMotor = hardwareMap.dcMotor.get("LF");
+            backLeftMotor = hardwareMap.dcMotor.get("LB");
+            frontRightMotor = hardwareMap.dcMotor.get("RF");
+            backRightMotor = hardwareMap.dcMotor.get("RB");
 
             // Initialize the shooting motor and reload-kickstand servo.
             shooterMotor = hardwareMap.get(DcMotor.class, "SM");
@@ -60,16 +60,17 @@ public class RedAutoOffGoal extends LinearOpMode {
             // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
             // Move to launch position
-            frontLeftMotor.setPower(FORWARD_SPEED);
-            backLeftMotor.setPower(FORWARD_SPEED);
-            frontRightMotor.setPower(FORWARD_SPEED);
-            backRightMotor.setPower(FORWARD_SPEED);
+            frontLeftMotor.setPower(-FORWARD_SPEED);
+            backLeftMotor.setPower(-FORWARD_SPEED);
+            frontRightMotor.setPower(-FORWARD_SPEED);
+            backRightMotor.setPower(-FORWARD_SPEED);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {
                 telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
+
             // Stop
             frontLeftMotor.setPower(0);
             backLeftMotor.setPower(0);
@@ -81,7 +82,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             // Shoot 3 artifacts
             shooterMotor.setPower(1);
             sleep(250);
-            for (int i = 1; i < 3; i++) {
+            for (int i = 1; i <= 3; i++) {
                 sleep(250);
                 servo.setPosition(0);
                 sleep(250);

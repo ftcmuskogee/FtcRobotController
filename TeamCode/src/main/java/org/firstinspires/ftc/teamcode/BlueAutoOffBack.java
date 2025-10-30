@@ -150,7 +150,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         // Shoot 3 artifacts
         shooterMotor.setPower(1);
         sleep(250);
-        for (int i = 1; i < 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             sleep(250);
             servo.setPosition(0);
             sleep(250);
