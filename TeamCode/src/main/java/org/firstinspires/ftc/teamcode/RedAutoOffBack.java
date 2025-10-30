@@ -45,7 +45,7 @@ public class RedAutoOffBack extends LinearOpMode {
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        servo.setPosition(0.05);
+        servo.setPosition(0.04);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -103,11 +103,11 @@ public class RedAutoOffBack extends LinearOpMode {
         sleep(100);
 
         shooterMotor.setPower(1);
+        sleep(500);
         for (int i = 1; i < 3 ; i++) {
-            sleep(500); //untested
             servo.setPosition(0);
-            sleep(500);
-            servo.setPosition(0.05);
+            sleep(250);
+            servo.setPosition(0.04);
         }
         shooterMotor.setPower(0);
 

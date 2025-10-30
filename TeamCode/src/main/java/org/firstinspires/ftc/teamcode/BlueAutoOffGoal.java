@@ -92,7 +92,7 @@ public class BlueAutoOffGoal extends LinearOpMode {
         backRightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         shooterMotor.setDirection(DcMotor.Direction.FORWARD); // untested
-        servo.setDirection(Servo.Direction.FORWARD); // untested
+        servo.setPosition(0.04);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -126,11 +126,11 @@ public class BlueAutoOffGoal extends LinearOpMode {
 
         // Shoot !3! artifacts
         shooterMotor.setPower(1);
+        sleep(500);
         for (int i = 1; i < 3; i++) {
-            sleep(500); // untested
-            servo.setPosition(0.5);
-            sleep(500);
             servo.setPosition(0);
+            sleep(250);
+            servo.setPosition(0.04);
         }
         shooterMotor.setPower(0);
 
