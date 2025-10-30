@@ -53,6 +53,7 @@ public class RedAutoOffBack extends LinearOpMode {
 
         waitForStart();
 
+        runtime.reset();
         //sleep(5000); also works, but this is more clear
         while (opModeIsActive() && (runtime.seconds() < 5.0)) {   // 5000 milliseconds
             telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
@@ -69,8 +70,8 @@ public class RedAutoOffBack extends LinearOpMode {
         while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
-
         }
+
         // Stop
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
