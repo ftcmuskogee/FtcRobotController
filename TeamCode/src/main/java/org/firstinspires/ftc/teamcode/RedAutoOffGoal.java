@@ -60,10 +60,10 @@ public class RedAutoOffGoal extends LinearOpMode {
             // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
             // Move to launch position
-            frontLeftMotor.setPower(-FORWARD_SPEED);
-            backLeftMotor.setPower(-FORWARD_SPEED);
-            frontRightMotor.setPower(-FORWARD_SPEED);
-            backRightMotor.setPower(-FORWARD_SPEED);
+            frontLeftMotor.setPower(FORWARD_SPEED);
+            backLeftMotor.setPower(FORWARD_SPEED);
+            frontRightMotor.setPower(FORWARD_SPEED);
+            backRightMotor.setPower(FORWARD_SPEED);
 
             runtime.reset();
             while (opModeIsActive() && (runtime.seconds() < 1.0)) {

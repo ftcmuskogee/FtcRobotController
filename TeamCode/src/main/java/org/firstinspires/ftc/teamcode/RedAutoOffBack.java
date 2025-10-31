@@ -62,13 +62,13 @@ public class RedAutoOffBack extends LinearOpMode {
         }
 
         // Move to launch line
-        frontLeftMotor.setPower(FORWARD_SPEED);
-        frontRightMotor.setPower(FORWARD_SPEED);
-        backLeftMotor.setPower(FORWARD_SPEED);
-        backRightMotor.setPower(FORWARD_SPEED);
+        frontLeftMotor.setPower(-FORWARD_SPEED);
+        frontRightMotor.setPower(-FORWARD_SPEED);
+        backLeftMotor.setPower(-FORWARD_SPEED);
+        backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.50)) {   // 1250 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -88,7 +88,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.3)) {   // 500 milliseconds
             telemetry.addData("Path", "Turning to goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -98,7 +98,7 @@ public class RedAutoOffBack extends LinearOpMode {
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        sleep(100);
+        sleep(200);
 
         // Shoot 3 artifacts
         shooterMotor.setPower(1);

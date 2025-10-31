@@ -110,10 +110,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         }
 
         // Move to launch line
-        frontLeftMotor.setPower(FORWARD_SPEED);
-        backLeftMotor.setPower(FORWARD_SPEED);
-        frontRightMotor.setPower(FORWARD_SPEED);
-        backRightMotor.setPower(FORWARD_SPEED);
+        frontLeftMotor.setPower(-FORWARD_SPEED);
+        backLeftMotor.setPower(-FORWARD_SPEED);
+        frontRightMotor.setPower(-FORWARD_SPEED);
+        backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
