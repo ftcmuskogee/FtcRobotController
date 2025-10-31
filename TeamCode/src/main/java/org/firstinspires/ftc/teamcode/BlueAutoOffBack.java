@@ -122,7 +122,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1)) {   // 1000 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1700 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -141,7 +141,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.35)) {   // 350 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 280 milliseconds
             telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -157,11 +157,12 @@ public class BlueAutoOffBack extends LinearOpMode {
         shooterMotor.setPower(1);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
-            sleep(500);
+            sleep(650);
             servo.setPosition(0);
             sleep(250);
             servo.setPosition(0.04);
         }
+        sleep(250);
         shooterMotor.setPower(0);
 
         runtime.reset();
@@ -170,14 +171,14 @@ public class BlueAutoOffBack extends LinearOpMode {
             telemetry.update();
         }
 
-        // Move off of launch line (left strafe)
+        // Move off of launch line (strafe left)
         frontLeftMotor.setPower(-FORWARD_SPEED);
         backLeftMotor.setPower(FORWARD_SPEED);
         frontRightMotor.setPower(FORWARD_SPEED);
         backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.35)) {   // 350 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
             telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }

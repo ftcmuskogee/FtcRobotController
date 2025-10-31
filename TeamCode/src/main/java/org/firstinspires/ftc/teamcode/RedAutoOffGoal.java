@@ -89,11 +89,12 @@ public class RedAutoOffGoal extends LinearOpMode {
             shooterMotor.setPower(1);
             sleep(250);
             for (int i = 1; i <= 3; i++) {
-                sleep(500);
+                sleep(650);
                 servo.setPosition(0);
                 sleep(250);
                 servo.setPosition(0.04);
             }
+            sleep(250);
             shooterMotor.setPower(0);
 
             runtime.reset();
@@ -109,7 +110,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             backRightMotor.setPower(FORWARD_SPEED);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 0.35)) {
+            while (opModeIsActive() && (runtime.seconds() < 0.5)) {
                 telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }

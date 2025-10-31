@@ -74,7 +74,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1)) {   // 1000 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1500 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -94,7 +94,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.3)) {   // 300 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 300 milliseconds
             telemetry.addData("Path", "Turning to goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -110,11 +110,12 @@ public class RedAutoOffBack extends LinearOpMode {
         shooterMotor.setPower(1);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
-            sleep(500);
+            sleep(650);
             servo.setPosition(0);
             sleep(250);
             servo.setPosition(0.04);
         }
+        sleep(250);
         shooterMotor.setPower(0);
 
         resetRuntime();
@@ -129,7 +130,8 @@ public class RedAutoOffBack extends LinearOpMode {
         backLeftMotor.setPower(-FORWARD_SPEED);
         backRightMotor.setPower(FORWARD_SPEED);
 
-        while (opModeIsActive() && (runtime.seconds() < 0.35)) {   // 350 milliseconds
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
             telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
