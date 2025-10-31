@@ -94,6 +94,12 @@ public class BlueAutoOffBack extends LinearOpMode {
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
         servo.setPosition(0.04);
 
+        // If no input, the robot won't drift
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
@@ -116,7 +122,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.25)) {   // 1250 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1)) {   // 1000 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -135,7 +141,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.35)) {   // 350 milliseconds
             telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -151,7 +157,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         shooterMotor.setPower(1);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
-            sleep(250);
+            sleep(500);
             servo.setPosition(0);
             sleep(250);
             servo.setPosition(0.04);
@@ -171,7 +177,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.35)) {   // 350 milliseconds
             telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
