@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 /**
  * Opmode designed to assist the user in tuning the `StandardTrackingWheelLocalizer`'s
@@ -60,7 +59,7 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  * effective center of rotation. You can ignore this effect. The center of rotation will be offset
  * slightly but your heading will still be fine. This does not affect your overall tracking
  * precision. The heading should still line up.
- */
+
 @Config
 @TeleOp(group = "drive")
 public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
@@ -127,4 +126,4 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
 
         while (!isStopRequested()) idle();
     }
-}
+}**/

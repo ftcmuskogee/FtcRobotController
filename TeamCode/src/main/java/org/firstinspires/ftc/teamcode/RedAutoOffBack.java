@@ -107,7 +107,7 @@ public class RedAutoOffBack extends LinearOpMode {
         sleep(200);
 
         // Shoot 3 artifacts
-        shooterMotor.setPower(1);
+        shooterMotor.setPower(.9);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
             sleep(650);
@@ -118,11 +118,11 @@ public class RedAutoOffBack extends LinearOpMode {
         sleep(250);
         shooterMotor.setPower(0);
 
-        resetRuntime();
+        /*runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 3)) {
             telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
-        }
+        }*/
 
         // Move off launch line (strafe right)
         frontLeftMotor.setPower(FORWARD_SPEED);

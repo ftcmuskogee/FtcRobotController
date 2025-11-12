@@ -86,7 +86,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             sleep(100);
 
             // Shoot 3 artifacts
-            shooterMotor.setPower(1);
+            shooterMotor.setPower(.9);
             sleep(250);
             for (int i = 1; i <= 3; i++) {
                 sleep(650);

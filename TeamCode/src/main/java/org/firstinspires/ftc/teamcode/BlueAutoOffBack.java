@@ -108,7 +108,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         waitForStart();
 
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
-
+        runtime.reset();
         // Wait for arena to be clear
         while (opModeIsActive() && (runtime.seconds() < 5.0)) {   // 5000 milliseconds
             telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
@@ -122,7 +122,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(-FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1700 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1500 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -141,7 +141,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 280 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 250 milliseconds
             telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -154,7 +154,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         sleep(100);
 
         // Shoot 3 artifacts
-        shooterMotor.setPower(1);
+        shooterMotor.setPower(.9);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
             sleep(650);
@@ -165,11 +165,11 @@ public class BlueAutoOffBack extends LinearOpMode {
         sleep(250);
         shooterMotor.setPower(0);
 
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {   // 3000 milliseconds
+        /*runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 3)) {   // 3000 milliseconds
             telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
-        }
+        }*/
 
         // Move off of launch line (strafe left)
         frontLeftMotor.setPower(-FORWARD_SPEED);
