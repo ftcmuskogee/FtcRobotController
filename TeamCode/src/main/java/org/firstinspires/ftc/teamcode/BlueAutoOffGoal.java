@@ -129,7 +129,7 @@ public class BlueAutoOffGoal extends LinearOpMode {
         sleep(100);
 
         // Shoot 3 artifacts
-        shooterMotor.setPower(.9);
+        shooterMotor.setPower(1);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
             sleep(650);
