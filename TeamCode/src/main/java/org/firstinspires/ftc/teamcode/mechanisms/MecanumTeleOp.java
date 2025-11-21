@@ -28,6 +28,7 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             // If no driver input, the robot won't move
@@ -44,7 +45,7 @@ public class MecanumTeleOp extends LinearOpMode {
             servo.setPosition(0.04);
 
             while (opModeIsActive()) {
-                double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
+                double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
                 double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
                 double rx = gamepad1.right_stick_x;
 
@@ -57,7 +58,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
-                if (gamepad2.right_trigger != 0) {
+                if (gamepad2.right_trigger != 0) {;
                     shooterMotor.setPower(1);
                 } else if (gamepad2.right_trigger == 0) {
                     shooterMotor.setPower(0);
