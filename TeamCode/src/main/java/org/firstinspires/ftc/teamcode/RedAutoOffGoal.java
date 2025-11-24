@@ -72,7 +72,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             backRightMotor.setPower(FORWARD_SPEED);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 0.8)) {
+            while (opModeIsActive() && (runtime.seconds() < 0.9)) {
                 telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
