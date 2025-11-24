@@ -14,7 +14,7 @@ public class Constants {
 
     /*  NOTICE --- The final line written under these static constants has to end in ";" and be the only one 'ended'.
     The order of testing is as follows; V V V
-    1. localization(DriveEncoderConstants)
+    1. localization(DriveEncoderConstants) !!!Done!!!
     2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants)
     Start referring to Panels(192.168.43.1:8001) for values
     3. Dual PID System (FollowerConstants) if we want to use it
@@ -65,13 +65,11 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
-            /*  Tuning Opmode (after Localization Tuners VVV Bottom of DriveEncoderConstants VVV)
-            .xVelocity(velocity on driver hub after tuning opmode(Forward Velocity Tuner))
-            .yVelocity(velocity on driver hub after tuning opmode(Lateral Velocity Tuner))
-
-            */
-
+            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+            /*  Tuning Opmode (Automatic Tuners)
+            .xVelocity() // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
+            .yVelocity(); // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
+*/ ;
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName("RF")
             .rightRearMotorName("RB")
@@ -83,13 +81,10 @@ public class Constants {
             .rightRearEncoderDirection(Encoder.REVERSE)
             .robotWidth(14)
             .robotLength(17)
-            /*  Tuning localizer
-            .forwardTicksToInches(multiplier on driver hub after localization(forwardtuner))
-            .strafeTicksToInches(multiplier on driver hub after localization(lateraltuner))
-            .turnTicksToInches(multiplier on driver hub after localization(lateraltuner) turned countercw)
-                Go test! :)
-            */
-            ;
+            // Tuning Localizer
+            .forwardTicksToInches(-0.02060969254715356) // multiplier on driver hub after localization(forwardtuner) Distance(from 72) = -2257.0012643410037     Multiplier = -0.02060969254715356
+            .strafeTicksToInches(-0.033693672508588346) // multiplier on driver hub after localization(lateraltuner) Distance(from 72) = -1352.599826066876     Multiplier = -0.033693672508588346
+            .turnTicksToInches(0.021291948461146404); // multiplier on driver hub after localization(lateraltuner) turned countercw
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
