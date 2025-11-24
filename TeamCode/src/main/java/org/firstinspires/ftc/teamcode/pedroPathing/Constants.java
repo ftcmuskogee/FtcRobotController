@@ -14,14 +14,42 @@ public class Constants {
 
     /*  NOTICE --- The final line written under these static constants has to end in ";" and be the only one 'ended'.
     The order of testing is as follows; V V V
-    localization(DriveEncoderConstants), tuning opmode(MecanumConstants, then FollowerConstants)
+    1. localization(DriveEncoderConstants)
+    2. tuning opmode(MecanumConstants, then FollowerConstants)
+    3. Dual PID System (FollowerConstants) if we want to use it
+    4. Translational (FollowerConstants)
+    5. Heading (FollowerConstants)
+    6. Drive (FollowerConstants)
+    7. Centripetal ()
+    Done tuning!
     */
-    // pounds2kg = 0.453592 * robot pounds ;
+    // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
             .mass(8.981);
             /*
             .forwardZeroPowerAcceleration(deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration))
             .lateralZeroPowerAcceleration(deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration))
+            */
+            /*  Dual PID System (after Tuning OpMode) if we want to use it
+            .useSecondaryTranslationalPIDF(true)
+            .useSecondaryHeadingPIDF(true)
+            .useSecondaryDrivePIDF(true)
+                then start tuning these (vids on the PP website)
+            */
+            /*  Translational (set P,I,D, and F)
+            .translationalPIDFCoefficients(new PIDFCoefficients(P, I, D, F))
+            if using dual PIDF VVV (could be diff P,I,D,and F values)
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
+            */
+            /*  Heading (set NEW P,I,D, and F)
+            .headingPIDFCoefficients(new PIDFCoefficients(P, I, D, F))
+            if using dual PIDF VVV (could be diff P,I,D,and F values)
+            .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
+            */
+            /*  Drive (set NEW P,I,D, and F)
+            .drivePIDFCoefficients(new PIDFCoefficients(P, I, D, F))
+            if using dual PIDF VVV (could be diff P,I,D,and F values)
+            .secondaryDrivePIDFCoefficients(new PIDFCoefficients(P,I,D,F))
             */
 
     public static MecanumConstants driveConstants = new MecanumConstants()
