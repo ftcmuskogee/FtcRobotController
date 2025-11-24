@@ -15,7 +15,8 @@ public class Constants {
     /*  NOTICE --- The final line written under these static constants has to end in ";" and be the only one 'ended'.
     The order of testing is as follows; V V V
     1. localization(DriveEncoderConstants)
-    2. tuning opmode(MecanumConstants, then FollowerConstants)
+    2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants)
+    Start referring to Panels(192.168.43.1:8001) for values
     3. Dual PID System (FollowerConstants) if we want to use it
     4. Translational (FollowerConstants)
     5. Heading (FollowerConstants)
