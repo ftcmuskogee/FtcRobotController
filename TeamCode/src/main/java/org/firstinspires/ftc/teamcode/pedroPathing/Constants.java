@@ -20,8 +20,8 @@ public class Constants {
     4. Translational (FollowerConstants)
     5. Heading (FollowerConstants)
     6. Drive (FollowerConstants)
-    7. Centripetal ()
-    Done tuning!
+    7. Centripetal (FollowerConstants)
+    Done tuning! Go to tests!
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
@@ -36,20 +36,23 @@ public class Constants {
             .useSecondaryDrivePIDF(true)
                 then start tuning these (vids on the PP website)
             */
-            /*  Translational (set P,I,D, and F)
+            /*  Translational (set P, I, D, and F)
             .translationalPIDFCoefficients(new PIDFCoefficients(P, I, D, F))
             if using dual PIDF VVV (could be diff P,I,D,and F values)
             .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
             */
-            /*  Heading (set NEW P,I,D, and F)
+            /*  Heading (set NEW P, I, D, and F)
             .headingPIDFCoefficients(new PIDFCoefficients(P, I, D, F))
             if using dual PIDF VVV (could be diff P,I,D,and F values)
             .secondaryHeadingPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
             */
-            /*  Drive (set NEW P,I,D, and F)
-            .drivePIDFCoefficients(new PIDFCoefficients(P, I, D, F))
-            if using dual PIDF VVV (could be diff P,I,D,and F values)
-            .secondaryDrivePIDFCoefficients(new PIDFCoefficients(P,I,D,F))
+            /*  Drive (set NEW P, I, D, T, and F)
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
+            if using dual PIDTF VVV (could be diff P, I, D, T, and F values)
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
+            */
+            /* Centripetal
+            .centripetalScaling(value on Panels after CentripetalTuner)
             */
 
     public static MecanumConstants driveConstants = new MecanumConstants()
