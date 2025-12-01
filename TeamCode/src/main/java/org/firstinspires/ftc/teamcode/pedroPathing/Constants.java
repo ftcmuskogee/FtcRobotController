@@ -26,11 +26,10 @@ public class Constants {
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(8.981);
-            /*
-            .forwardZeroPowerAcceleration(deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration))
-            .lateralZeroPowerAcceleration(deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration))
-            */
+            .mass(8.981)
+            // Tuning OpMode (Automatic Tuner)
+            .forwardZeroPowerAcceleration(-39.97140024051915) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
+            .lateralZeroPowerAcceleration(-70.26362735961949) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
             /*  Dual PID System (after Tuning OpMode) if we want to use it
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
@@ -55,6 +54,7 @@ public class Constants {
             /* Centripetal
             .centripetalScaling(value on Panels after CentripetalTuner)
             */
+            ;
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(0.6)
@@ -66,25 +66,25 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-            /*  Tuning Opmode (Automatic Tuners)
-            .xVelocity() // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
-            .yVelocity(); // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
-*/ ;
+            //  Tuning Opmode (Automatic Tuners)
+            .xVelocity(58.72306447352061) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
+            .yVelocity(48.360966697168735); // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
+
     public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
             .rightFrontMotorName("RF")
             .rightRearMotorName("RB")
             .leftRearMotorName("LB")
             .leftFrontMotorName("LF")
-            .leftFrontEncoderDirection(Encoder.FORWARD)
-            .leftRearEncoderDirection(Encoder.FORWARD)
-            .rightFrontEncoderDirection(Encoder.REVERSE)
-            .rightRearEncoderDirection(Encoder.REVERSE)
+            .leftFrontEncoderDirection(Encoder.REVERSE)
+            .leftRearEncoderDirection(Encoder.REVERSE)
+            .rightFrontEncoderDirection(Encoder.FORWARD)
+            .rightRearEncoderDirection(Encoder.FORWARD)
             .robotWidth(14)
             .robotLength(17)
             // Tuning Localizer
-            .forwardTicksToInches(-0.02060969254715356) // multiplier on driver hub after localization(forwardtuner) Distance(from 72) = -2257.0012643410037     Multiplier = -0.02060969254715356
-            .strafeTicksToInches(-0.033693672508588346) // multiplier on driver hub after localization(lateraltuner) Distance(from 72) = -1352.599826066876     Multiplier = -0.033693672508588346
-            .turnTicksToInches(0.021291948461146404); // multiplier on driver hub after localization(lateraltuner) turned countercw
+            .forwardTicksToInches(0.008904481704402669) // multiplier on driver hub after localization(forwardtuner) Distance(from 72) = -39.09745351874278     Multiplier = 0.008904481704402669
+            .strafeTicksToInches(-0.008553911684931144) // multiplier on driver hub after localization(lateraltuner) Distance(from 72) = 261.07095840857505     Multiplier = -0.008553911684931144
+            .turnTicksToInches(-0.02143723800600562); // multiplier on driver hub after localization(lateraltuner) turned countercw = -0.02143723800600562
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 

@@ -546,7 +546,7 @@ class ForwardZeroPowerAccelerationTuner extends OpMode {
 
     @Override
     public void init() {
-        follower.setStartingPose(new Pose(72, 72));
+        follower.setStartingPose(new Pose(72, 0));
     }
 
     /** This initializes the drive motors as well as the Panels telemetryM. */
@@ -650,7 +650,7 @@ class LateralZeroPowerAccelerationTuner extends OpMode {
 
     @Override
     public void init() {
-        follower.setStartingPose(new Pose(72, 72));
+        follower.setStartingPose(new Pose(0, 72));
     }
 
     /** This initializes the drive motors as well as the Panels telemetry. */
