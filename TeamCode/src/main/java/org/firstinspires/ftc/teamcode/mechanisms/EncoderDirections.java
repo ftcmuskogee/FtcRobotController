@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
+import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.localizerConstants;
+
+import com.pedropathing.ftc.localization.Encoder;
+import com.pedropathing.ftc.localization.constants.DriveEncoderConstants;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
-public class MecanumTeleOp extends LinearOpMode {
+public class EncoderDirections extends LinearOpMode {
         @Override
         public void runOpMode() throws InterruptedException {
             // Declare our motors
@@ -15,10 +20,12 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+            // Create Pedro Pathing encoders
+            Encoder frontLeftEncoder  = new Encoder((DcMotorEx) frontLeftMotor);
+            Encoder backLeftEncoder   = new Encoder((DcMotorEx) backLeftMotor);
+            Encoder frontRightEncoder = new Encoder((DcMotorEx) frontRightMotor);
+            Encoder backRightEncoder  = new Encoder((DcMotorEx) backRightMotor);
 
-            DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            Servo servo = hardwareMap.get(Servo.class, "servo");
-            // DcMotor intakeMotor = hardwareMap.dcMotor.get("I");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -29,8 +36,6 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-            shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            // intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); // or REVERSE
 
             // If no driver input, the robot won't move
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -43,7 +48,6 @@ public class MecanumTeleOp extends LinearOpMode {
             if (isStopRequested()) return;
 
             // Ensures that the servo corrects itself AFTER the robot can move without fouls (at start of TeleOp)
-            servo.setPosition(0.04);
 
             while (opModeIsActive()) {
                 double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -59,33 +63,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
-                if (gamepad2.right_trigger != 0) {;
-                    shooterMotor.setPower(1);
-                } else if (gamepad2.right_trigger == 0) {
-                    shooterMotor.setPower(0);
-                }
-
-                if (gamepad2.aWasPressed()){
-                    servo.setPosition(0.0);
-                    sleep(250);
-                    servo.setPosition(0.04);
-                }
-
-                if (gamepad2.bWasPressed()){
-                    servo.setPosition(0.0);
-                }
-                if (gamepad2.xWasPressed()){
-                    servo.setPosition(0.3);
-                }
-
-                /*
-                if (gamepad2.left_trigger != 0) {;
-                    intakeMotor.setPower(1);
-                } else if (gamepad2.left_trigger == 0) {
-                    intakeMotor.setPower(0);
-                }
-                */
-
                 frontLeftMotor.setPower(frontLeftPower);
                 backLeftMotor.setPower(backLeftPower);
                 frontRightMotor.setPower(frontRightPower);
@@ -94,6 +71,11 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("FL Power", frontLeftPower);
                 telemetry.addData("BL Power", backLeftPower);
                 telemetry.addData("FR Power", frontRightPower);
+                telemetry.addData("BR Power", backRightPower);
+                telemetry.addData("FL Encoder Direction", frontLeftEncoder.getDeltaPosition());
+                telemetry.addData("BL Encoder Direction", backLeftEncoder.getDeltaPosition());
+                telemetry.addData("FR Encoder Direction", frontRightEncoder.getDeltaPosition());
+                telemetry.addData("BR Encoder Direction", backRightEncoder.getDeltaPosition());
                 telemetry.addData("BR Power", backRightPower);
                 telemetry.update();
 
