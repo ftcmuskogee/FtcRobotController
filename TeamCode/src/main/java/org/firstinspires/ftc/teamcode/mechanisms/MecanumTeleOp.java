@@ -18,7 +18,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
             DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
             Servo servo = hardwareMap.get(Servo.class, "servo");
-            // DcMotor intakeMotor = hardwareMap.dcMotor.get("I");
+            // DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
