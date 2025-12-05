@@ -78,9 +78,11 @@ public class MecanumTeleOp extends LinearOpMode {
                     servo.setPosition(0.3);
                 }
 
-                /*if (gamepad2.left_trigger != 0) {;
+                /*if (gamepad2.dpad_down) {;
+                    intakeMotor.setPower(-1);
+                } else if (gamepad2.dpad_up) {
                     intakeMotor.setPower(1);
-                } else if (gamepad2.left_trigger == 0) {
+                } else {
                     intakeMotor.setPower(0);
                 }*/
 
@@ -93,6 +95,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 telemetry.addData("BL Power", backLeftPower);
                 telemetry.addData("FR Power", frontRightPower);
                 telemetry.addData("BR Power", backRightPower);
+                //telemetry.addData("Intake Direction", (?1,"IN";?-1,"OUT";"OFF")); // edit code to have if statements similar to intake button mapping
                 telemetry.update();
 
             }
