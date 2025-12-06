@@ -116,10 +116,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         }
 
         // Move to launch line
-        frontLeftMotor.setPower(-FORWARD_SPEED);
-        backLeftMotor.setPower(-FORWARD_SPEED);
-        frontRightMotor.setPower(-FORWARD_SPEED);
-        backRightMotor.setPower(-FORWARD_SPEED);
+        frontLeftMotor.setPower(FORWARD_SPEED);
+        backLeftMotor.setPower(FORWARD_SPEED);
+        frontRightMotor.setPower(FORWARD_SPEED);
+        backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1700 milliseconds
@@ -154,7 +154,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         sleep(100);
 
         // Shoot 3 artifacts
-        shooterMotor.setPower(.75);
+        shooterMotor.setPower(1);
         sleep(250);
         for (int i = 1; i <= 3; i++) {
             sleep(650);
@@ -162,7 +162,7 @@ public class BlueAutoOffBack extends LinearOpMode {
             sleep(250);
             servo.setPosition(0.04);
         }
-        sleep(250);
+        sleep(300);
         shooterMotor.setPower(0);
 
         runtime.reset();
