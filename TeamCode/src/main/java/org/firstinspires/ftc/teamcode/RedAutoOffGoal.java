@@ -24,7 +24,7 @@ public class RedAutoOffGoal extends LinearOpMode {
 
 
         static final double     FORWARD_SPEED = 0.6; // For directions from the left joystick.
-        static final double     TURN_SPEED    = 0.5; // For rotations from the right joystick.
+        static final double     TURN_SPEED    = 0.2; // For rotations from the right joystick.
 
         @Override
         public void runOpMode() {
@@ -87,7 +87,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             shooterMotor.setPower(0.95);
             sleep(1500); // spin-up
             intakeMotor.setPower(-1);
-            sleep(200);  // feed bal
+            sleep(200);  // feed ball
             intakeMotor.setPower(0);
             sleep(1200);  // shooter
             intakeMotor.setPower(-1);
@@ -96,29 +96,97 @@ public class RedAutoOffGoal extends LinearOpMode {
             shooterMotor.setPower(0);
             sleep(150);
 
-            // Move off of launch line (right strafe)
-            frontLeftMotor.setPower(FORWARD_SPEED);
-            backLeftMotor.setPower(-FORWARD_SPEED);
-            frontRightMotor.setPower(-FORWARD_SPEED);
-            backRightMotor.setPower(FORWARD_SPEED);
 
-            runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 0.5)) {
-                telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
-                telemetry.update();
-            }
+            setDrivePower(-FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
+            runFor(0.8);
 
-            // Stop
-            frontLeftMotor.setPower(0);
-            backLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
-            backRightMotor.setPower(0);
+            setDrivePower(TURN_SPEED, TURN_SPEED, -TURN_SPEED, -TURN_SPEED);
+            runFor(0.18);
 
+            stopDrive();
             sleep(100);
 
-            // current code = 10 second auto
+            // --------------------------------------------------------------------------------------
+            // 4. Intake PPG? GPP?
+            // --------------------------------------------------------------------------------------
+            intakeMotor.setPower(-1);
+            sleep(100);
+
+            setDrivePower(FORWARD_SPEED/2, FORWARD_SPEED/2, FORWARD_SPEED/2, FORWARD_SPEED/2);
+            runFor(2.40);
+
+            stopDrive();
+            intakeMotor.setPower(0);
+
+            // --------------------------------------------------------------------------------------
+            // 5. Move backward from PPG
+            // --------------------------------------------------------------------------------------
+            setDrivePower(-FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
+            runFor(0.7);
+
+            // --------------------------------------------------------------------------------------
+            // 6. Turn back to goal
+            // --------------------------------------------------------------------------------------
+            setDrivePower(-TURN_SPEED, -TURN_SPEED, TURN_SPEED, TURN_SPEED);
+            runFor(0.3);
+            setDrivePower(TURN_SPEED, TURN_SPEED, TURN_SPEED, TURN_SPEED);
+            runFor(.3);
+            stopDrive();
+
+            // --------------------------------------------------------------------------------------
+            // 7. SHOOT AGAIN
+            // --------------------------------------------------------------------------------------
+            shooterMotor.setPower(1);
+            sleep(1500); // spin-up
+            intakeMotor.setPower(-1);
+            sleep(200);  // feed ball
+            intakeMotor.setPower(0);
+            sleep(1200);  // shooter
+            intakeMotor.setPower(-1);
+            sleep(300); // feed ball
+            intakeMotor.setPower(0);
+            shooterMotor.setPower(0);
+            sleep(150);
+
+            sleep(300);
+            shooterMotor.setPower(0);
+
+            runFor(2.5);
+
+            // --------------------------------------------------------------------------------------
+            // 8. STRAFE OFF LAUNCH LINE
+            // --------------------------------------------------------------------------------------
+            setDrivePower(FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
+            runFor(0.7);
+
+            stopDrive();
+
+            telemetry.addData("Path", "Complete");
+            telemetry.update();
+            sleep(200);
         }
 
+    private void setDrivePower(double fl, double bl, double fr, double br) {
+    frontLeftMotor.setPower(fl);
+    backLeftMotor.setPower(bl);
+    frontRightMotor.setPower(fr);
+    backRightMotor.setPower(br);
+}
 
-
+    private void stopDrive() {
+        setDrivePower(0, 0, 0, 0);
     }
+
+    private void runFor(double seconds) {
+        runtime.reset();
+        while (opModeIsActive() && runtime.seconds() < seconds) {
+            telemetry.addData("Running For", "%.2f sec", seconds);
+            telemetry.update();
+        }
+    }
+
+    // current code = 10 second auto
+}
+
+
+

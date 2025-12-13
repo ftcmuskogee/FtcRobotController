@@ -72,7 +72,7 @@ public class BlueAutoOffBack extends LinearOpMode {
 
 
     static final double FORWARD_SPEED = 0.6; // For directions from the left joystick.
-    static final double TURN_SPEED = 0.5; // For rotations from the right joystick.
+    static final double TURN_SPEED = 0.2; // For rotations from the right joystick.
 
     @Override
     public void runOpMode() {
@@ -123,7 +123,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.55)) {   // 1700 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.70)) {   // 1700 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -142,7 +142,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.20)) {   // 280 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 280 milliseconds
             telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }

@@ -72,7 +72,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.55)) {   // 1500 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1700 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
