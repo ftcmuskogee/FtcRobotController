@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -65,13 +66,13 @@ public class BlueAutoOffBack extends LinearOpMode {
     private DcMotor backRightMotor = null;
 
     private DcMotor shooterMotor = null;
-    private Servo servo = null;
-
-    private ElapsedTime     runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED = 0.6; // For directions from the left joystick.
-    static final double     TURN_SPEED    = 0.5; // For rotations from the right joystick.
+    private ElapsedTime runtime = new ElapsedTime();
+
+
+    static final double FORWARD_SPEED = 0.6; // For directions from the left joystick.
+    static final double TURN_SPEED = 0.5; // For rotations from the right joystick.
 
     @Override
     public void runOpMode() {
@@ -81,18 +82,18 @@ public class BlueAutoOffBack extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
         DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-        Servo servo = hardwareMap.get(Servo.class, "servo");
+        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-        servo.setPosition(0.04);
+
 
         // If no input, the robot won't drift
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -110,7 +111,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
 
         // Wait for arena to be clear
-        while (opModeIsActive() && (runtime.seconds() < 5.0)) {   // 5000 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 10.0)) {   // 5000 milliseconds
             telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -122,7 +123,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1700 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.55)) {   // 1700 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -141,10 +142,26 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(TURN_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 280 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.20)) {   // 280 milliseconds
             telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+
+        // -------------------------
+        // 2. SHOOT FIRST TWO BALLS
+        // -------------------------
+        shooterMotor.setPower(0.95);
+        sleep(1500); // spin-up
+        intakeMotor.setPower(-1);
+        sleep(200);  // feed bal
+        intakeMotor.setPower(0);
+        sleep(1300);  // shooter
+        intakeMotor.setPower(-1);
+        sleep(300); // feed ball
+        intakeMotor.setPower(0);
+        shooterMotor.setPower(0);
+        sleep(150);
+
         // Stop
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
@@ -152,24 +169,6 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(0);
 
         sleep(100);
-
-        // Shoot 3 artifacts
-        shooterMotor.setPower(1);
-        sleep(250);
-        for (int i = 1; i <= 3; i++) {
-            sleep(650);
-            servo.setPosition(0);
-            sleep(250);
-            servo.setPosition(0.04);
-        }
-        sleep(300);
-        shooterMotor.setPower(0);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {   // 3000 milliseconds
-            telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
 
         // Move off of launch line (strafe left)
         frontLeftMotor.setPower(-FORWARD_SPEED);

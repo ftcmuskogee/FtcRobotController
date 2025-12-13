@@ -17,13 +17,13 @@ public class RedAutoOffBack extends LinearOpMode {
     private DcMotor backRightMotor = null;
 
     private DcMotor shooterMotor = null;
-    private Servo servo = null;
+
 
     private ElapsedTime runtime = new ElapsedTime();
 
 
-    static final double     FORWARD_SPEED = 0.6; // For directions from the left joystick.
-    static final double     TURN_SPEED    = 0.5; // For rotations from the right joystick.
+    static final double FORWARD_SPEED = 0.6; // For directions from the left joystick.
+    static final double TURN_SPEED = 0.5; // For rotations from the right joystick.
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,19 +34,17 @@ public class RedAutoOffBack extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
         DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-        Servo servo = hardwareMap.get(Servo.class, "servo");
-
+        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        servo.setPosition(0.04);
 
         // If no input, the robot won't drift
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -74,7 +72,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1500 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.55)) {   // 1500 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -106,23 +104,20 @@ public class RedAutoOffBack extends LinearOpMode {
 
         sleep(200);
 
-        // Shoot 3 artifacts
-        shooterMotor.setPower(1);
-        sleep(250);
-        for (int i = 1; i <= 3; i++) {
-            sleep(650);
-            servo.setPosition(0);
-            sleep(250);
-            servo.setPosition(0.04);
-        }
-        sleep(300);
+        // -------------------------
+        // 2. SHOOT FIRST TWO BALLS
+        // -------------------------
+        shooterMotor.setPower(0.9);
+        sleep(1000); // spin-up
+        intakeMotor.setPower(-1);
+        sleep(200);  // feed bal
+        intakeMotor.setPower(0);
+        sleep(1200);  // shooter
+        intakeMotor.setPower(-1);
+        sleep(300); // feed ball
+        intakeMotor.setPower(0);
         shooterMotor.setPower(0);
-
-        resetRuntime();
-        while (opModeIsActive() && (runtime.seconds() < 3)) {
-            telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+        sleep(150);
 
         // Move off launch line (strafe right)
         frontLeftMotor.setPower(FORWARD_SPEED);
@@ -149,10 +144,6 @@ public class RedAutoOffBack extends LinearOpMode {
         // current code = 12 second auto
 
 
-        
-
-
     }
 
 }
-

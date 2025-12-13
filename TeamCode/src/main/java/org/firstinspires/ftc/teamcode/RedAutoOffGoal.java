@@ -18,7 +18,7 @@ public class RedAutoOffGoal extends LinearOpMode {
         private DcMotor backRightMotor = null;
 
         private DcMotor shooterMotor = null;
-        private Servo servo = null;
+
 
         private ElapsedTime runtime = new ElapsedTime();
 
@@ -34,21 +34,17 @@ public class RedAutoOffGoal extends LinearOpMode {
             backLeftMotor = hardwareMap.dcMotor.get("LB");
             frontRightMotor = hardwareMap.dcMotor.get("RF");
             backRightMotor = hardwareMap.dcMotor.get("RB");
-
+            DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
             // Initialize the shooting motor and reload-kickstand servo.
             shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            servo = hardwareMap.get(Servo.class, "servo");
-
             // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
             // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
             // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
             frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
             backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-            frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+            frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
             backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-            shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-            servo.setPosition(0.04);
 
             // If no input, the robot won't drift
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,7 +68,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             backRightMotor.setPower(-FORWARD_SPEED);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 0.9)) {
+            while (opModeIsActive() && (runtime.seconds() < 0.8)) {
                 telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
                 telemetry.update();
             }
@@ -85,23 +81,20 @@ public class RedAutoOffGoal extends LinearOpMode {
 
             sleep(100);
 
-            // Shoot 3 artifacts
-            shooterMotor.setPower(1);
-            sleep(250);
-            for (int i = 1; i <= 3; i++) {
-                sleep(650);
-                servo.setPosition(0);
-                sleep(250);
-                servo.setPosition(0.04);
-            }
-            sleep(300);
+            // -------------------------
+            // 2. SHOOT FIRST TWO BALLS
+            // -------------------------
+            shooterMotor.setPower(0.95);
+            sleep(1500); // spin-up
+            intakeMotor.setPower(-1);
+            sleep(200);  // feed bal
+            intakeMotor.setPower(0);
+            sleep(1200);  // shooter
+            intakeMotor.setPower(-1);
+            sleep(300); // feed ball
+            intakeMotor.setPower(0);
             shooterMotor.setPower(0);
-
-            runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-                telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
-                telemetry.update();
-            }
+            sleep(150);
 
             // Move off of launch line (right strafe)
             frontLeftMotor.setPower(FORWARD_SPEED);

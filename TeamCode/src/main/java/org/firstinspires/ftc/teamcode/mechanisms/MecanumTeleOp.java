@@ -17,8 +17,8 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
 
             DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            Servo servo = hardwareMap.get(Servo.class, "servo");
-            //DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
+            //Servo servo = hardwareMap.get(Servo.class, "servo");
+            DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -26,24 +26,26 @@ public class MecanumTeleOp extends LinearOpMode {
             // See the note about this earlier on this page.
             frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            //intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); // or REVERSE
+            intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); // or REVERSE
 
             // If no driver input, the robot won't move
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             waitForStart();
 
             if (isStopRequested()) return;
 
             // Ensures that the servo corrects itself AFTER the robot can move without fouls (at start of TeleOp)
-            servo.setPosition(0.04);
+            //servo.setPosition(0.04);
 
             while (opModeIsActive()) {
                 double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -59,43 +61,61 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
-                if (gamepad2.right_trigger != 0) {;
-                    shooterMotor.setPower(1);
-                } else if (gamepad2.right_trigger == 0) {
+                if (gamepad2.right_trigger >= 0.05) {;
+                    shooterMotor.setPower(.9);
+                } else if (gamepad2.left_trigger >= 0.05) {
+                    shooterMotor.setPower(-.9);
+                } else {
                     shooterMotor.setPower(0);
                 }
 
-                if (gamepad2.aWasPressed()){
-                    servo.setPosition(0.0);
-                    sleep(250);
-                    servo.setPosition(0.04);
-                }
-
+               if (gamepad2.aWasPressed()){
+                    intakeMotor.setPower(-1);
+                    sleep(150);
+                    intakeMotor.setPower(0);
+               }
+                /*
                 if (gamepad2.bWasPressed()){
                     servo.setPosition(0.0);
                 }
                 if (gamepad2.xWasPressed()){
                     servo.setPosition(0.3);
-                }
-
-                /*if (gamepad2.dpad_down) {;
-                    intakeMotor.setPower(-1);
-                } else if (gamepad2.dpad_up) {
-                    intakeMotor.setPower(1);
-                } else {
-                    intakeMotor.setPower(0);
                 }*/
 
-                frontLeftMotor.setPower(frontLeftPower);
-                backLeftMotor.setPower(backLeftPower);
-                frontRightMotor.setPower(frontRightPower);
-                backRightMotor.setPower(backRightPower);
+                if (gamepad2.dpad_down) {
+                    intakeMotor.setPower(-1); // IN
+                } else if (gamepad2.dpad_up) {
+                    intakeMotor.setPower(1); // OUT
+                } else {
+                    intakeMotor.setPower(0);
+                }
 
+                double driveMult = 1;
+                boolean driveSlowed = false;
+                boolean driveStronger = false;
+                if (gamepad1.left_trigger >= 0.05) {
+                    driveMult = 0.35;
+                    driveSlowed = true;
+                } else if (gamepad1.right_trigger >= 0.05) {
+                    driveMult = 1.25;
+                    driveStronger = true;
+                } else {
+                    driveMult = 1;
+                    driveSlowed = false;
+                    driveStronger = false;
+                }
+
+                frontLeftMotor.setPower(frontLeftPower * driveMult);
+                backLeftMotor.setPower(backLeftPower * driveMult);
+                frontRightMotor.setPower(frontRightPower * driveMult);
+                backRightMotor.setPower(backRightPower * driveMult);
+
+                telemetry.addData("Precision Driving", driveSlowed);
+                telemetry.addData("Stronger Driving", driveStronger);
                 telemetry.addData("FL Power", frontLeftPower);
                 telemetry.addData("BL Power", backLeftPower);
                 telemetry.addData("FR Power", frontRightPower);
                 telemetry.addData("BR Power", backRightPower);
-                //telemetry.addData("Intake Direction", (?1,"IN";?-1,"OUT";"OFF")); // edit code to have if statements similar to intake button mapping
                 telemetry.update();
 
             }

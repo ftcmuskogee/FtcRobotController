@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -65,7 +66,7 @@ public class BlueAutoOffGoal extends LinearOpMode {
     private DcMotor backRightMotor = null;
 
     private DcMotor shooterMotor = null;
-    private Servo servo = null;
+    private DcMotor intakeMotor = null;
 
     private ElapsedTime     runtime = new ElapsedTime();
 
@@ -81,24 +82,26 @@ public class BlueAutoOffGoal extends LinearOpMode {
         frontRightMotor = hardwareMap.dcMotor.get("RF");
         backRightMotor = hardwareMap.dcMotor.get("RB");
         shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-        servo = hardwareMap.get(Servo.class, "servo");
+        intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        shooterMotor.setDirection(DcMotor.Direction.FORWARD); // untested
-        servo.setPosition(0.04);
+        shooterMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // If no input, the robot won't drift
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -128,23 +131,20 @@ public class BlueAutoOffGoal extends LinearOpMode {
 
         sleep(100);
 
-        // Shoot 3 artifacts
-        shooterMotor.setPower(1);
-        sleep(250);
-        for (int i = 1; i <= 3; i++) {
-            sleep(650);
-            servo.setPosition(0);
-            sleep(250);
-            servo.setPosition(0.04);
-        }
-        sleep(300);
+        // -------------------------
+        // 2. SHOOT FIRST TWO BALLS
+        // -------------------------
+        shooterMotor.setPower(0.9);
+        sleep(1000); // spin-up
+        intakeMotor.setPower(-1);
+        sleep(200);  // feed bal
+        intakeMotor.setPower(0);
+        sleep(1200);  // shooter
+        intakeMotor.setPower(-1);
+        sleep(300); // feed ball
+        intakeMotor.setPower(0);
         shooterMotor.setPower(0);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Shooting...: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+        sleep(150);
 
         // Move off of launch line (left strafe)
         frontLeftMotor.setPower(-FORWARD_SPEED);
