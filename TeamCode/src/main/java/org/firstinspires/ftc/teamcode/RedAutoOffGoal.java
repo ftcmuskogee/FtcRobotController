@@ -97,8 +97,8 @@ public class RedAutoOffGoal extends LinearOpMode {
             sleep(150);
 
 
-            setDrivePower(-FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
-            runFor(0.8);
+            /*setDrivePower(-FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
+            runFor(0.6);
 
             setDrivePower(TURN_SPEED, TURN_SPEED, -TURN_SPEED, -TURN_SPEED);
             runFor(0.18);
@@ -122,7 +122,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             // 5. Move backward from PPG
             // --------------------------------------------------------------------------------------
             setDrivePower(-FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
-            runFor(0.7);
+            runFor(0.5);
 
             // --------------------------------------------------------------------------------------
             // 6. Turn back to goal
@@ -151,7 +151,7 @@ public class RedAutoOffGoal extends LinearOpMode {
             sleep(300);
             shooterMotor.setPower(0);
 
-            runFor(2.5);
+            runFor(2.5);*/
 
             // --------------------------------------------------------------------------------------
             // 8. STRAFE OFF LAUNCH LINE

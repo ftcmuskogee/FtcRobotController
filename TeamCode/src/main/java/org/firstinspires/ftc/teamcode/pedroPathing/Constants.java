@@ -10,13 +10,16 @@ import com.pedropathing.paths.PathConstraints;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.TwoDeadWheelLocalizer;
+
 @Disabled
 public class Constants {
 
     /*  NOTICE --- The final line written under these static constants has to end in ";" and be the only one 'ended'.
     The order of testing is as follows; V V V
-    1. localization(DriveEncoderConstants) !!!Done!!!
-    2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants) !!!Done!!!
+    1. localization(DriveEncoderConstants)
+    2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants)
     Start referring to Panels(192.168.43.1:8001) for values
     3. Dual PID System (FollowerConstants) if we want to use it !!!Not Now!!!
     4. Translational (FollowerConstants)
@@ -27,10 +30,10 @@ public class Constants {
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(7.4389088)
+            .mass(4.4452016)
             // Tuning OpMode (Automatic Tuner)
-            .forwardZeroPowerAcceleration(-39.97140024051915) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
-            .lateralZeroPowerAcceleration(-70.26362735961949) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
+            //.forwardZeroPowerAcceleration() // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
+            //.lateralZeroPowerAcceleration() // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
             /*  Dual PID System (after Tuning OpMode) if we want to use it
             .useSecondaryTranslationalPIDF(true)
             .useSecondaryHeadingPIDF(true)
@@ -65,33 +68,20 @@ public class Constants {
             .leftFrontMotorName("LF")
             .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             //  Tuning Opmode (Automatic Tuners)
-            .xVelocity(58.72306447352061) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
-            .yVelocity(48.360966697168735); // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
+            //.xVelocity() // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
+            //.yVelocity() // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
+            ;
+    //public static TwoDeadWheelLocalizer localizerConstants = new TwoDeadWheelLocalizer();
 
-    public static DriveEncoderConstants localizerConstants = new DriveEncoderConstants()
-            .rightFrontMotorName("RF")
-            .rightRearMotorName("RB")
-            .leftRearMotorName("LB")
-            .leftFrontMotorName("LF")
-            .leftFrontEncoderDirection(Encoder.REVERSE)
-            .leftRearEncoderDirection(Encoder.REVERSE)
-            .rightFrontEncoderDirection(Encoder.FORWARD)
-            .rightRearEncoderDirection(Encoder.FORWARD)
-            .robotWidth(14)
-            .robotLength(16)
-            // Tuning Localizer
-            .forwardTicksToInches(0.008904481704402669) // multiplier on driver hub after localization(forwardtuner) Distance(from 72) = -39.09745351874278     Multiplier = 0.008904481704402669
-            .strafeTicksToInches(-0.008553911684931144) // multiplier on driver hub after localization(lateraltuner) Distance(from 72) = 261.07095840857505     Multiplier = -0.008553911684931144
-            .turnTicksToInches(-0.02143723800600562); // multiplier on driver hub after localization(lateraltuner) turned countercw = -0.02143723800600562
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 3000, 1, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
-                .driveEncoderLocalizer(localizerConstants)
+                //.TwoDeadWheelLocalizer(localizerConstants)
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)
                 .build();

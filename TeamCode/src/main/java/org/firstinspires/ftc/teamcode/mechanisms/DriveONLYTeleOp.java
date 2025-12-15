@@ -3,10 +3,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp
-public class MecanumTeleOp extends LinearOpMode {
+@TeleOp(name = "PedroPathing Bot - Teleop", group = "PedroPascal")
+public class DriveONLYTeleOp extends LinearOpMode {
         @Override
         public void runOpMode() throws InterruptedException {
             // Declare our motors
@@ -16,10 +15,6 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
 
-            DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            //Servo servo = hardwareMap.get(Servo.class, "servo");
-            DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
-
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
             // reverse the left side instead.
@@ -27,18 +22,13 @@ public class MecanumTeleOp extends LinearOpMode {
             frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-            shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); // or REVERSE
+            backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             // If no driver input, the robot won't move
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             waitForStart();
 
@@ -61,55 +51,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
-                if (gamepad2.right_trigger >= 0.05) {;
-                    shooterMotor.setPower(.9);
-                } else if (gamepad2.left_trigger >= 0.05) {
-                    shooterMotor.setPower(-.9);
-                } else {
-                    shooterMotor.setPower(0);
-                }
-
-               if (gamepad2.aWasPressed()){
-                    intakeMotor.setPower(-1);
-                    sleep(150);
-                    intakeMotor.setPower(0);
-               }
-                if (gamepad2.bWasPressed()){
-                    intakeMotor.setPower(1);
-                    sleep(150);
-                    intakeMotor.setPower(0);
-                }
-
-                if (gamepad2.dpad_down) {
-                    intakeMotor.setPower(-1); // IN
-                } else if (gamepad2.dpad_up) {
-                    intakeMotor.setPower(1); // OUT
-                } else {
-                    intakeMotor.setPower(0);
-                }
-
-                double driveMult = 1;
-                boolean driveSlowed = false;
-                boolean driveStronger = false;
-                if (gamepad1.left_trigger >= 0.05) {
-                    driveMult = 0.35;
-                    driveSlowed = true;
-                } else if (gamepad1.right_trigger >= 0.05) {
-                    driveMult = 1.25;
-                    driveStronger = true;
-                } else {
-                    driveMult = 1;
-                    driveSlowed = false;
-                    driveStronger = false;
-                }
-
-                frontLeftMotor.setPower(frontLeftPower * driveMult);
-                backLeftMotor.setPower(backLeftPower * driveMult);
-                frontRightMotor.setPower(frontRightPower * driveMult);
-                backRightMotor.setPower(backRightPower * driveMult);
-
-                telemetry.addData("Precision Driving", driveSlowed);
-                telemetry.addData("Stronger Driving", driveStronger);
                 telemetry.addData("FL Power", frontLeftPower);
                 telemetry.addData("BL Power", backLeftPower);
                 telemetry.addData("FR Power", frontRightPower);

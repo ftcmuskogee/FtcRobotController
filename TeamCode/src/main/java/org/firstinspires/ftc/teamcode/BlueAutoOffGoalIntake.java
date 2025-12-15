@@ -83,10 +83,10 @@ public class BlueAutoOffGoalIntake extends LinearOpMode {
         // 3. Back Up, Turn to PPG (intake pickup)
         // --------------------------------------------------------------------------------------
         setDrivePower(-FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED, -FORWARD_SPEED);
-        runFor(0.8);
+        runFor(0.5);
 
         setDrivePower(-TURN_SPEED, -TURN_SPEED, TURN_SPEED, TURN_SPEED);
-        runFor(0.18);
+        runFor(0.2);
 
         stopDrive();
         sleep(100);
@@ -113,7 +113,7 @@ public class BlueAutoOffGoalIntake extends LinearOpMode {
         // 6. Turn back to goal
         // --------------------------------------------------------------------------------------
         setDrivePower(TURN_SPEED, TURN_SPEED, -TURN_SPEED, -TURN_SPEED);
-        runFor(0.3);
+        runFor(0.2);
         setDrivePower(TURN_SPEED, TURN_SPEED, TURN_SPEED, TURN_SPEED);
         runFor(.3);
         stopDrive();
