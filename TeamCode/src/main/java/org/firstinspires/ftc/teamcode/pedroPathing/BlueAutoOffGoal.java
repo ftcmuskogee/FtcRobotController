@@ -25,7 +25,7 @@ public class BlueAutoOffGoal extends OpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(24.4, 125, Math.toRadians(131)));
+        follower.setStartingPose(new Pose(24, 127, Math.toRadians(136)));
 
         paths = new Paths(follower); // Build paths
 
@@ -61,9 +61,9 @@ public class BlueAutoOffGoal extends OpMode {
             ShootPreload = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(24.400, 125.000), new Pose(55.084, 94.187))
+                            new BezierLine(new Pose(24.000, 127.000), new Pose(55.084, 94.187))
                     )
-                    .setLinearHeadingInterpolation(Math.toRadians(131), Math.toRadians(131))
+                    .setLinearHeadingInterpolation(Math.toRadians(136), Math.toRadians(131))
                     .build();
 
             GetReload1 = follower
