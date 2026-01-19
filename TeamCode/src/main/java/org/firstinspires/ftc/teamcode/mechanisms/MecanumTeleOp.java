@@ -30,30 +30,30 @@ public class MecanumTeleOp extends LinearOpMode {
             // If your robot moves backwards when commanded to go forwards,
             // reverse the left side instead.
             // See the note about this earlier on this page.
-            frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
             shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
             intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             //shootServo.setDirection(CRServo.Direction.FORWARD);
-            hoodServo.setDirection(Servo.Direction.FORWARD);
+            hoodServo.setDirection(Servo.Direction.REVERSE);
 
             // If no driver input, the robot won't move
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Set limits to the hood servo.
-            hoodServo.scaleRange(-0.3, 0);
-            hoodServo.setPosition(-0.3);
+            hoodServo.scaleRange(0, 0.3);
+            hoodServo.setPosition(0.3);
 
             waitForStart();
 
@@ -87,7 +87,7 @@ public class MecanumTeleOp extends LinearOpMode {
                     shooterMotor2.setPower(-.9);
                 } else {
                     shooterMotor1.setPower(0);
-                    shooterMotor1.setPower(0);
+                    shooterMotor2.setPower(0);
                 }
 /*
                if (gamepad2.aWasPressed()){
@@ -112,9 +112,9 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 // Hood system
                 if (gamepad2.right_stick_y >= 0.05) {
-                    hoodServo.setPosition((hoodServo.getPosition()) + 0.05);
-                } else if (gamepad2.right_stick_y <= -0.05) {
                     hoodServo.setPosition((hoodServo.getPosition()) - 0.05);
+                } else if (gamepad2.right_stick_y <= -0.05) {
+                    hoodServo.setPosition((hoodServo.getPosition()) + 0.05);
                 }
 
                 // Controlled drive system
