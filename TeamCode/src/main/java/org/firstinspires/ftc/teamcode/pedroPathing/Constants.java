@@ -21,19 +21,19 @@ public class Constants {
 
     /*  NOTICE --- The final line written under these static constants has to end in ";" and be the only one 'ended'.
     The order of testing is as follows; V V V
-    1. localization(PinpointConstants) !Done!
-    2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants) !Done!
+    1. localization(PinpointConstants)
+    2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants)
     Start referring to Panels(192.168.43.1:8001) for values
     ?. Dual PID System (FollowerConstants) if we want to use it !!!Not Now!!!
-    3. Translational PIDF (FollowerConstants) !Done!
-    4. Heading PIDF (FollowerConstants) !Done!
-    5. Drive PIDTF (FollowerConstants) !Done!
-    6. Centripetal Scale (FollowerConstants) !Done!
-    Done tuning! Go do tests! !Done!
+    3. Translational PIDF (FollowerConstants)
+    4. Heading PIDF (FollowerConstants)
+    5. Drive PIDTF (FollowerConstants)
+    6. Centripetal Scale (FollowerConstants)
+    Done tuning! Go do tests!
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(4.4452016)
+            .mass(9.88831367)
             // Tuning OpMode (Automatic Tuner)
             .forwardZeroPowerAcceleration(-52.57631940261318) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
             .lateralZeroPowerAcceleration(-63.7450812952701) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
@@ -58,14 +58,14 @@ public class Constants {
             ;
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .maxPower(0.45)
-            .rightFrontMotorName("RF")
-            .rightRearMotorName("RB")
-            .leftRearMotorName("LB")
-            .leftFrontMotorName("LF")
+            .maxPower(0.6)
+            .rightFrontMotorName("FR")
+            .rightRearMotorName("BR")
+            .leftRearMotorName("BL")
+            .leftFrontMotorName("FL")
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             //  Tuning Opmode (Automatic Tuners)
             .xVelocity(50.48624546321359) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
@@ -74,14 +74,14 @@ public class Constants {
     public static PinpointConstants localizerConstants = new PinpointConstants()
             // Forward/Backward is +X/-X
             // Left/Right is +Y/-Y
-            .forwardPodY(-(14.8 / 2)) // width divided by 2 (wheel is centered left/right)  // Distance from center (y axis) // ||
-            .strafePodX(-(17.2 / 2)) // length divided by 2 (wheel is centered up/down)  // Distance from center (x axis)    // --
+            .forwardPodY((8.25)) // Distance from center (y axis) // ||
+            .strafePodX(-(6.75)) // Distance from center (x axis)  // --
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("ODO") // Ohh, Dee, Ohh (all capital)
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             // !test odo directions! if forward/left decrease, reverse them accordingly
-            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             ;
 
 
