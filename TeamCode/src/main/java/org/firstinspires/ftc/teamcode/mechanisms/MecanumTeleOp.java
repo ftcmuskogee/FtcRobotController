@@ -32,14 +32,14 @@ public class MecanumTeleOp extends LinearOpMode {
             // See the note about this earlier on this page.
             frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
-            shooterMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
+            shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
             intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            shootServo.setDirection(CRServo.Direction.FORWARD);
+            //shootServo.setDirection(CRServo.Direction.FORWARD);
             hoodServo.setDirection(Servo.Direction.FORWARD);
 
             // If no driver input, the robot won't move
@@ -47,12 +47,13 @@ public class MecanumTeleOp extends LinearOpMode {
             backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Set limits to the hood servo.
             hoodServo.scaleRange(0, 0.3);
+            hoodServo.setPosition(0);
 
             waitForStart();
 
