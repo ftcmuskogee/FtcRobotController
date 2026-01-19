@@ -14,25 +14,25 @@ public class MecanumTeleOp extends LinearOpMode {
         public void runOpMode() throws InterruptedException {
             // Declare our motors
             // Make sure your ID's match your configuration
-            DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
-            DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
-            DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
-            DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
+            DcMotor frontLeftMotor = hardwareMap.dcMotor.get("FL");
+            DcMotor backLeftMotor = hardwareMap.dcMotor.get("BL");
+            DcMotor frontRightMotor = hardwareMap.dcMotor.get("FR");
+            DcMotor backRightMotor = hardwareMap.dcMotor.get("BR");
 
-            DcMotor shooterMotor1 = hardwareMap.get(DcMotor.class, "SM1");
-            DcMotor shooterMotor2 = hardwareMap.get(DcMotor.class, "SM2");
+            DcMotor shooterMotor1 = hardwareMap.get(DcMotor.class, "S1");
+            DcMotor shooterMotor2 = hardwareMap.get(DcMotor.class, "S2");
             DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
 
-            CRServo shootServo = hardwareMap.get(CRServo.class, "SS");
-            Servo hoodServo = hardwareMap.get(Servo.class, "HS");
+            //CRServo shootServo = hardwareMap.get(CRServo.class, "SS");
+            Servo hoodServo = hardwareMap.get(Servo.class, "HOOD");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
             // reverse the left side instead.
             // See the note about this earlier on this page.
             frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -52,8 +52,8 @@ public class MecanumTeleOp extends LinearOpMode {
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Set limits to the hood servo.
-            hoodServo.scaleRange(0, 0.3);
-            hoodServo.setPosition(0);
+            hoodServo.scaleRange(-0.3, 0);
+            hoodServo.setPosition(-0.3);
 
             waitForStart();
 
@@ -89,7 +89,7 @@ public class MecanumTeleOp extends LinearOpMode {
                     shooterMotor1.setPower(0);
                     shooterMotor1.setPower(0);
                 }
-
+/*
                if (gamepad2.aWasPressed()){
                     shootServo.setPower(.5);
                     sleep(150);
@@ -100,7 +100,7 @@ public class MecanumTeleOp extends LinearOpMode {
                     sleep(150);
                     shootServo.setPower(0);
                 }
-
+*/
                 // Intake system
                 if (gamepad2.dpad_down) {
                     intakeMotor.setPower(-1); // IN
