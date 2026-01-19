@@ -17,7 +17,20 @@ public class AprilTagWebcam extends OpMode {
     @Override
     public void loop() {
         aprilTagWebcam.update();
+
         AprilTagDetection id20 = aprilTagWebcam.getTagByspecificId(20);
-       telemetry.addData("id20 String", id20.toString());
+        if (id20 != null) {
+            aprilTagWebcam.displayDetectionTelemetry(id20);
+        } else {
+            telemetry.addLine("Tag 20 not detected");
+        }
+
+        AprilTagDetection id24 = aprilTagWebcam.getTagByspecificId(24);
+        if (id24 != null) {
+            aprilTagWebcam.displayDetectionTelemetry(id24);
+        } else {
+            telemetry.addLine("Tag 24 not detected");
+        }
     }
+
 }

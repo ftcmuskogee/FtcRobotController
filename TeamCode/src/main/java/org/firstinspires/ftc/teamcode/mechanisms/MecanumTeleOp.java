@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.java_websocket.framing.ContinuousFrame;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
@@ -16,9 +19,12 @@ public class MecanumTeleOp extends LinearOpMode {
             DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
             DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
 
-            DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-            //Servo servo = hardwareMap.get(Servo.class, "servo");
+            DcMotor shooterMotor1 = hardwareMap.get(DcMotor.class, "SM1");
+            DcMotor shooterMotor2 = hardwareMap.get(DcMotor.class, "SM2");
             DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
+
+            CRServo shootServo = hardwareMap.get(CRServo.class, "SS");
+            Servo hoodServo = hardwareMap.get(Servo.class, "HS");
 
             // Reverse the right side motors. This may be wrong for your setup.
             // If your robot moves backwards when commanded to go forwards,
@@ -29,16 +35,24 @@ public class MecanumTeleOp extends LinearOpMode {
             frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-            shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD); // or REVERSE
+            shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+            shooterMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
+            intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            shootServo.setDirection(CRServo.Direction.FORWARD);
+            hoodServo.setDirection(Servo.Direction.FORWARD);
 
             // If no driver input, the robot won't move
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            // Set limits to the hood servo.
+            hoodServo.scaleRange(0, 0.3);
 
             waitForStart();
 
@@ -48,6 +62,8 @@ public class MecanumTeleOp extends LinearOpMode {
             //servo.setPosition(0.04);
 
             while (opModeIsActive()) {
+
+                // Drive system
                 double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
                 double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
                 double rx = gamepad1.right_stick_x;
@@ -61,25 +77,30 @@ public class MecanumTeleOp extends LinearOpMode {
                 double frontRightPower = (y - x - rx) / denominator;
                 double backRightPower = (y + x - rx) / denominator;
 
+                // Shooting system
                 if (gamepad2.right_trigger >= 0.05) {;
-                    shooterMotor.setPower(.9);
+                    shooterMotor1.setPower(.9);
+                    shooterMotor2.setPower(.9);
                 } else if (gamepad2.left_trigger >= 0.05) {
-                    shooterMotor.setPower(-.9);
+                    shooterMotor1.setPower(-.9);
+                    shooterMotor2.setPower(-.9);
                 } else {
-                    shooterMotor.setPower(0);
+                    shooterMotor1.setPower(0);
+                    shooterMotor1.setPower(0);
                 }
 
                if (gamepad2.aWasPressed()){
-                    intakeMotor.setPower(-1);
+                    shootServo.setPower(.5);
                     sleep(150);
-                    intakeMotor.setPower(0);
+                    shootServo.setPower(0);
                }
                 if (gamepad2.bWasPressed()){
-                    intakeMotor.setPower(1);
+                    shootServo.setPower(1);
                     sleep(150);
-                    intakeMotor.setPower(0);
+                    shootServo.setPower(0);
                 }
 
+                // Intake system
                 if (gamepad2.dpad_down) {
                     intakeMotor.setPower(-1); // IN
                 } else if (gamepad2.dpad_up) {
@@ -88,6 +109,14 @@ public class MecanumTeleOp extends LinearOpMode {
                     intakeMotor.setPower(0);
                 }
 
+                // Hood system
+                if (gamepad2.right_stick_y >= 0.05) {
+                    hoodServo.setPosition((hoodServo.getPosition()) + 0.05);
+                } else if (gamepad2.right_stick_y <= -0.05) {
+                    hoodServo.setPosition((hoodServo.getPosition()) - 0.05);
+                }
+
+                // Controlled drive system
                 double driveMult = 1;
                 boolean driveSlowed = false;
                 boolean driveStronger = false;
