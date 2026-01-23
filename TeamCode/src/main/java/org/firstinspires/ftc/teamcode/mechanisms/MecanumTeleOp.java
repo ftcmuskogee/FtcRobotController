@@ -53,7 +53,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
             // Set limits to the hood servo.
             hoodServo.scaleRange(0, 0.35);
-            hoodServo.setPosition(0.35);
+            hoodServo.setPosition(0);
 
             waitForStart();
 
@@ -79,10 +79,10 @@ public class MecanumTeleOp extends LinearOpMode {
                 double backRightPower = (y + x - rx) / denominator;
 
                 // Shooting system
-                if (gamepad2.right_trigger >= 0.05) {;
+                if (gamepad2.right_trigger >= 0.025) {;
                     shooterMotor1.setPower(1);
                     shooterMotor2.setPower(1);
-                } else if (gamepad2.left_trigger >= 0.05) {
+                } else if (gamepad2.left_trigger >= 0.025) {
                     shooterMotor1.setPower(-1);
                     shooterMotor2.setPower(-1);
                 } else {
