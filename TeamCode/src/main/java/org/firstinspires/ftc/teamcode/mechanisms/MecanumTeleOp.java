@@ -30,10 +30,10 @@ public class MecanumTeleOp extends LinearOpMode {
             // If your robot moves backwards when commanded to go forwards,
             // reverse the left side instead.
             // See the note about this earlier on this page.
-            frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
             backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
             shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -52,8 +52,8 @@ public class MecanumTeleOp extends LinearOpMode {
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Set limits to the hood servo.
-            hoodServo.scaleRange(0, 0.3);
-            hoodServo.setPosition(0.3);
+            hoodServo.scaleRange(0, 0.35);
+            hoodServo.setPosition(0.35);
 
             waitForStart();
 
@@ -80,11 +80,11 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 // Shooting system
                 if (gamepad2.right_trigger >= 0.05) {;
-                    shooterMotor1.setPower(.9);
-                    shooterMotor2.setPower(.9);
+                    shooterMotor1.setPower(1);
+                    shooterMotor2.setPower(1);
                 } else if (gamepad2.left_trigger >= 0.05) {
-                    shooterMotor1.setPower(-.9);
-                    shooterMotor2.setPower(-.9);
+                    shooterMotor1.setPower(-1);
+                    shooterMotor2.setPower(-1);
                 } else {
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);

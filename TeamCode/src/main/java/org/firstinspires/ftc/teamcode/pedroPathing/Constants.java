@@ -33,27 +33,27 @@ public class Constants {
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(9.88831367)
-            // Tuning OpMode (Automatic Tuner)
-            .forwardZeroPowerAcceleration(-52.57631940261318) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
-            .lateralZeroPowerAcceleration(-63.7450812952701) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
+            .mass(9.9)
+         // Tuning OpMode (Automatic Tuner)
+            .forwardZeroPowerAcceleration(-38.15687812211297) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
+            .lateralZeroPowerAcceleration(-55.984695759171636) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
             // Dual PID System (after Tuning OpMode) if we want to use it, set following to "true"
             .useSecondaryTranslationalPIDF(false)
             .useSecondaryHeadingPIDF(false)
             .useSecondaryDrivePIDF(false)
             // Translational (set P, I, D, and F)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.0525, 0, 0.00330, 0.03))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.007, 0, 0.001, 0.02))
             // if using dual PIDF VVV (could be diff P,I,D,and F values)
             //.secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
             //  Heading (set NEW P, I, D, and F)
-            .headingPIDFCoefficients(new PIDFCoefficients(0.5, 0, 0.001, 0.0225))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.4, 0, 0.001, 0.01))
             //if using dual PIDF VVV (could be diff P,I,D,and F values)
             //.secondaryHeadingPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
             //  Drive (set NEW P, I, D, T, and F)
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0, 0.00007, 0.5, 0.0045))
-            /*if using dual PIDTF VVV (could be diff P, I, D, T, and F values)
-            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
-            */
+            //if using dual PIDTF VVV (could be diff P, I, D, T, and F values)
+            //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
+
             .centripetalScaling(0.008)
             ;
 
@@ -67,9 +67,9 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            //  Tuning Opmode (Automatic Tuners)
-            .xVelocity(50.48624546321359) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
-            .yVelocity(39.06283064714567) // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
+            // Tuning Opmode (Automatic Tuners)
+            .xVelocity(50.53694837675321) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
+           .yVelocity(33.56449565737266) // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
             ;
     public static PinpointConstants localizerConstants = new PinpointConstants()
             // Forward/Backward is +X/-X
@@ -93,6 +93,5 @@ public class Constants {
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)
                 .build()
-                ;
-    }
-}
+                ;}}
+
