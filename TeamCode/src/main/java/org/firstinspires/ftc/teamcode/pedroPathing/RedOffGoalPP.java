@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@Autonomous(name = "PedroPathing - Red Off Goal", group = "PP Autonomous")
+@Autonomous(name = "PedroPathing - Red Off Goal", group = "PP Autonomous", preselectTeleOp = "MecanumTeleop")
 @Configurable // Panels
 public class RedOffGoalPP extends OpMode {
 

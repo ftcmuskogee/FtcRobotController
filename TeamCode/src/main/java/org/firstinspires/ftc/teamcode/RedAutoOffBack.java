@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Red Auto - Optional", group = "Red")
+@Autonomous(name = "Red Auto - Optional", group = "Red", preselectTeleOp = "MecanumTeleop")
 public class RedAutoOffBack extends LinearOpMode {
 
     // Declare OpMode members.

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name = "Red Auto - Main", group = "Red")
+@Autonomous(name = "Red Auto - Main", group = "Red", preselectTeleOp = "MecanumTeleop")
 public class RedAutoOffGoal extends LinearOpMode {
 
         // Declare OpMode members.

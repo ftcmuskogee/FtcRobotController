@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Blue Auto - Main !Intake!", group = "Blue")
+@Autonomous(name = "Blue Auto - Main !Intake!", group = "Blue", preselectTeleOp = "MecanumTeleop")
 public class BlueAutoOffGoalIntake extends LinearOpMode {
 
     private DcMotor frontLeftMotor = null;

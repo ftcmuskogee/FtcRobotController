@@ -10,7 +10,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@Autonomous(name = "Pedro Pathing - All Back Red Autonomous", group = "PP Autonomous")
+@Autonomous(name = "Pedro Pathing - All Back Red Autonomous", group = "PP Autonomous", preselectTeleOp = "MecanumTeleop")
 @Configurable
 public class RedStShOffBackAuto extends OpMode {
 
