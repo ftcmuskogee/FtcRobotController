@@ -40,7 +40,7 @@ public class MecanumTeleOp extends LinearOpMode {
             intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             shootServo.setDirection(Servo.Direction.FORWARD);
-            hoodServo.setDirection(Servo.Direction.REVERSE);
+            hoodServo.setDirection(Servo.Direction.FORWARD);
 
             // If no driver input, the robot won't move
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -53,16 +53,16 @@ public class MecanumTeleOp extends LinearOpMode {
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Set limits to the servos.
-            shootServo.scaleRange(0, 0.25); // ?
-            hoodServo.scaleRange(0.09, 0.3);
+            shootServo.scaleRange(0.15, 0.275); // ?
+            hoodServo.scaleRange(0.09, 0.21);
 
             waitForStart();
 
             if (isStopRequested()) return;
 
             // Ensures that the servos correct themselves AFTER the robot can move without fouls (at start of TeleOp)
-            shootServo.setPosition(0); // ?
-            hoodServo.setPosition(0.09);
+            shootServo.setPosition(0.9); // ?
+            hoodServo.setPosition(0.20);
 
             while (opModeIsActive()) {
 
@@ -93,16 +93,27 @@ public class MecanumTeleOp extends LinearOpMode {
                     shooterMotor2.setPower(0);
                 }
 
-           /*    if (gamepad2.aWasPressed()){
-                    shootServo.setPosition(.5);
-                    sleep(150);
+                /*if (gamepad2.aWasPressed()){
                     shootServo.setPosition(0);
-               }
+                    intakeMotor.setPower(0.9);
+                    sleep(1000);
+                    intakeMotor.setPower(0);
+                    shootServo.setPosition(0.9);
+                }
                 if (gamepad2.bWasPressed()){
-                    shootServo.setPosition(1);
-                    sleep(150);
                     shootServo.setPosition(0);
+                    intakeMotor.setPower(0.9);
+                    sleep(300);
+                    intakeMotor.setPower(0);
+                    shootServo.setPosition(0.9);
                 }*/
+
+                if (gamepad2.aWasPressed()){
+                    shootServo.setPosition(0);
+                }
+                if (gamepad2.bWasPressed()){
+                    shootServo.setPosition(0.9);
+                }
 
                 // Intake system
                 if (gamepad2.dpad_down) {
@@ -115,9 +126,9 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 // Hood system
                 if (gamepad2.xWasPressed()) {
-                    hoodServo.setPosition(0.3);
+                    hoodServo.setPosition(1);
                 } else if (gamepad2.yWasPressed()) {
-                    hoodServo.setPosition(0.09);
+                    hoodServo.setPosition(0);
                 }
 
                 // Controlled drive system
