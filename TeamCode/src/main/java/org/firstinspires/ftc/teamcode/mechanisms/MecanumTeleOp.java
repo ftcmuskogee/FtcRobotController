@@ -52,15 +52,17 @@ public class MecanumTeleOp extends LinearOpMode {
             shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            // Set limits to the hood servo.
-            hoodServo.scaleRange(0.04, 0.25);
+            // Set limits to the servos.
+            shootServo.scaleRange(0, 0.25); // ?
+            hoodServo.scaleRange(0.09, 0.3);
 
             waitForStart();
 
             if (isStopRequested()) return;
 
-            // Ensures that the servo corrects itself AFTER the robot can move without fouls (at start of TeleOp)
-            hoodServo.setPosition(0.04);
+            // Ensures that the servos correct themselves AFTER the robot can move without fouls (at start of TeleOp)
+            shootServo.setPosition(0); // ?
+            hoodServo.setPosition(0.09);
 
             while (opModeIsActive()) {
 
@@ -113,9 +115,9 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 // Hood system
                 if (gamepad2.xWasPressed()) {
-                    hoodServo.setPosition(0.25);
+                    hoodServo.setPosition(0.3);
                 } else if (gamepad2.yWasPressed()) {
-                    hoodServo.setPosition(0.04);
+                    hoodServo.setPosition(0.09);
                 }
 
                 // Controlled drive system
