@@ -33,7 +33,7 @@ public class MecanumTeleOp extends LinearOpMode {
             frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
             shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
             shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);

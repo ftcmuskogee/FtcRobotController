@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Red Auto - Optional", group = "Red", preselectTeleOp = "MecanumTeleop")
+@Autonomous(name = "Red Auto - Optional", group = "Red", preselectTeleOp = "MecanumTeleOp")
 public class RedAutoOffBack extends LinearOpMode {
 
     // Declare OpMode members.
@@ -29,28 +29,34 @@ public class RedAutoOffBack extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
-        DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("FL");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("BL");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("FR");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("BR");
+        DcMotor shooterMotor1 = hardwareMap.get(DcMotor.class, "S1");
+        DcMotor shooterMotor2 = hardwareMap.get(DcMotor.class, "S2");
         DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // If no input, the robot won't drift
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -72,7 +78,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.7)) {   // 1700 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 1.85)) {   // 1850 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
@@ -107,16 +113,22 @@ public class RedAutoOffBack extends LinearOpMode {
         // -------------------------
         // 2. SHOOT FIRST TWO BALLS
         // -------------------------
-        shooterMotor.setPower(0.9);
+        shooterMotor1.setPower(1);
+        shooterMotor2.setPower(1);
         sleep(1000); // spin-up
         intakeMotor.setPower(-1);
-        sleep(200);  // feed bal
+        sleep(200);  // feed ball
         intakeMotor.setPower(0);
-        sleep(1200);  // shooter
+        sleep(250);  // shooter
         intakeMotor.setPower(-1);
-        sleep(300); // feed ball
+        sleep(200); // feed ball
         intakeMotor.setPower(0);
-        shooterMotor.setPower(0);
+        sleep(250);  // shooter
+        intakeMotor.setPower(-1);
+        sleep(200); // feed ball
+        intakeMotor.setPower(0);
+        shooterMotor1.setPower(0);
+        shooterMotor2.setPower(0);
         sleep(150);
 
         // Move off launch line (strafe right)
@@ -126,7 +138,7 @@ public class RedAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.65)) {   // 500 milliseconds
             telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }

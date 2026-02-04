@@ -77,11 +77,11 @@ public class BlueAutoOffBack extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
-        DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
-        DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
-        DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
-        DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("FL");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("BL");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("FR");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("BR");
+       // DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
         DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
