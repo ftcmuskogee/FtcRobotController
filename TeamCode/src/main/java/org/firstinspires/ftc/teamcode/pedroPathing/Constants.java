@@ -33,7 +33,7 @@ public class Constants {
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(9.9)
+            .mass(9.79759519)
          // Tuning OpMode (Automatic Tuner)
             .forwardZeroPowerAcceleration(-38.15687812211297) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
             .lateralZeroPowerAcceleration(-55.984695759171636) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
@@ -53,7 +53,6 @@ public class Constants {
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0, 0.00007, 0.5, 0.0045))
             //if using dual PIDTF VVV (could be diff P, I, D, T, and F values)
             //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
-
             .centripetalScaling(0.008)
             ;
 
@@ -64,9 +63,9 @@ public class Constants {
             .leftRearMotorName("BL")
             .leftFrontMotorName("FL")
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             // Tuning Opmode (Automatic Tuners)
             .xVelocity(50.53694837675321) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
            .yVelocity(33.56449565737266) // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
@@ -74,16 +73,15 @@ public class Constants {
     public static PinpointConstants localizerConstants = new PinpointConstants()
             // Forward/Backward is +X/-X
             // Left/Right is +Y/-Y
-            .forwardPodY((8.25)) // Distance from center (y axis) // ||
-            .strafePodX(-(6.75)) // Distance from center (x axis)  // --
+            .forwardPodY(-(6.5)) // Distance from center (14/2) (y axis) // ||
+            .strafePodX((8.5)) // Distance from center (18/2) (x axis)  // --
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("ODO") // Ohh, Dee, Ohh (all capital)
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
             // !test odo directions! if forward/left decrease, reverse them accordingly
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
-            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED)
             ;
-
 
     public static PathConstraints pathConstraints = new PathConstraints(0.97, 3000, 1, 1);
 
@@ -93,5 +91,6 @@ public class Constants {
                 .pathConstraints(pathConstraints)
                 .mecanumDrivetrain(driveConstants)
                 .build()
-                ;}}
-
+                ;
+    }
+}
