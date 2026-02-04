@@ -66,6 +66,18 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
+
+            /*
+                An or Programmer,
+                push code first,
+                you will likely need to do it somehow else,
+                it is updated on github.
+                We need wired push back!!!
+                Follow the directions for PP Tuning
+                on lines 22-33
+                No lollygagging!!!!!!!!!!
+            */
+
             // Tuning Opmode (Automatic Tuners)
             .xVelocity(50.53694837675321) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
            .yVelocity(33.56449565737266) // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
