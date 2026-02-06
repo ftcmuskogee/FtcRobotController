@@ -30,6 +30,7 @@ public class BlueAutoOffGoal extends OpMode {
     // ================= STATE MACHINE =================
     private AutoState state;
     private long stateStartTime;
+    final long INTAKE_TIME_MS = 3000;
 
     private enum AutoState {
         ToGoal1,
@@ -132,7 +133,21 @@ public class BlueAutoOffGoal extends OpMode {
                 break;
 
             case RELOAD_1:
-                followOnce(paths.Reload1, AutoState.TO_GOAL_2);
+                if (stateStartTime == 0) {
+                    follower.followPath(paths.Reload1);
+                }
+
+                // run intake for 3 seconds
+                if (stateStartTime < INTAKE_TIME_MS) {
+                    intakeMotor.setPower(-1);
+                } else {
+                    intakeMotor.setPower(0);
+                }
+
+                // leave only when BOTH are done
+                if (elapsed >= INTAKE_TIME_MS && !follower.isBusy()) {
+                    transitionTo(AutoState.TO_GOAL_2);
+                }
                 break;
 
             case TO_GOAL_2:
