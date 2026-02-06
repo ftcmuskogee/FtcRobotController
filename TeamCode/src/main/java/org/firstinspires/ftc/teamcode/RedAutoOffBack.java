@@ -16,9 +16,6 @@ public class RedAutoOffBack extends LinearOpMode {
     private DcMotor frontRightMotor = null;
     private DcMotor backRightMotor = null;
 
-    private DcMotor shooterMotor = null;
-
-
     private ElapsedTime runtime = new ElapsedTime();
 
 
@@ -111,7 +108,7 @@ public class RedAutoOffBack extends LinearOpMode {
         sleep(200);
 
         // -------------------------
-        // 2. SHOOT FIRST TWO BALLS
+        // 2. SHOOT Preload
         // -------------------------
         shooterMotor1.setPower(1);
         shooterMotor2.setPower(1);
