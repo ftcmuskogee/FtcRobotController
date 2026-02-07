@@ -114,9 +114,9 @@ public class BlueAutoOffGoal extends OpMode {
 
                 if (elapsed < 1900) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2200 && elapsed < 2500) {
+                } else if (elapsed >= 1900 && elapsed < 2500) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2500) {
+                } else if (elapsed >= 2500) {
                     intakeMotor.setPower(0);
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
@@ -154,6 +154,7 @@ public class BlueAutoOffGoal extends OpMode {
 
 
             case TO_GOAL_2:
+                follower.setMaxPowerScaling(0.9);
                 shooterMotor1.setPower(.95);
                 shooterMotor2.setPower(.95);
                 followOnce(paths.ToGoal2, AutoState.SHOOT2);
@@ -200,6 +201,7 @@ public class BlueAutoOffGoal extends OpMode {
                 break;
 
             case TO_GOAL_3:
+                follower.setMaxPowerScaling(0.9);
                 shooterMotor1.setPower(.95);
                 shooterMotor2.setPower(.95);
                 followOnce(paths.ToGoal3, AutoState.SHOOT3);

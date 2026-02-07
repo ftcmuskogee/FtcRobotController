@@ -100,6 +100,7 @@ public class RedOffGoalPP extends OpMode {
 
     // ================= AUTO LOGIC =================
     private void updateAuto() {
+
         long elapsed = System.currentTimeMillis() - stateStartTime;
 
         switch (state) {
@@ -116,9 +117,9 @@ public class RedOffGoalPP extends OpMode {
 
                 if (elapsed < 1900) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2200 && elapsed < 2500) {
+                } else if (elapsed >= 1900 && elapsed < 2500) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2500) {
+                } else if (elapsed >= 2500) {
                     intakeMotor.setPower(0);
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
@@ -156,6 +157,7 @@ public class RedOffGoalPP extends OpMode {
 
 
             case TO_GOAL_2:
+                follower.setMaxPowerScaling(0.9);
                 shooterMotor1.setPower(.95);
                 shooterMotor2.setPower(.95);
                 followOnce(paths.ToGoal2, AutoState.SHOOT2);
@@ -202,6 +204,7 @@ public class RedOffGoalPP extends OpMode {
                 break;
 
             case TO_GOAL_3:
+                follower.setMaxPowerScaling(0.9);
                 shooterMotor1.setPower(.95);
                 shooterMotor2.setPower(.95);
                 followOnce(paths.ToGoal3, AutoState.SHOOT3);
@@ -237,14 +240,19 @@ public class RedOffGoalPP extends OpMode {
         stateStartTime = System.currentTimeMillis();
     }
 
+    private boolean pathStarted = false;
+
     private void followOnce(PathChain path, AutoState next) {
-        if (!follower.isBusy()) {
+        if (!pathStarted) {
             follower.followPath(path);
+            pathStarted = true;
+        } else if (!follower.isBusy()) {
+            pathStarted = false;
             transitionTo(next);
         }
     }
 
-    // ================= PATHS =================
+    // ================= PATH DEFINITIONS =================
     public static class Paths {
         public PathChain ToGoal1;
         public PathChain SetToReload1;
@@ -267,50 +275,50 @@ public class RedOffGoalPP extends OpMode {
             SetToReload1 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(95.152, 108.212),
-                            new Pose(90.100, 93.500)))
+                            new Pose(90.100, 98.000)))
                     .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
                     .build();
 
             Reload1 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(90.100, 93.500),
-                            new Pose(120.000, 93.500)))
+                            new Pose(90.100, 98.000),
+                            new Pose(122.000, 98.000)))
                     .setTangentHeadingInterpolation()
                     .build();
 
             ToGoal2 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(120.000, 93.500),
+                            new Pose(122.000, 98.000),
                             new Pose(95.511, 108.000)))
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42.5))
                     .build();
 
             SetToReload2 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(95.511, 108.000),
-                            new Pose(88.878, 60.000)))
-                    .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
+                            new Pose(88.878, 72.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(42.5), Math.toRadians(0))
                     .build();
 
             Reload2 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(88.878, 60.000),
-                            new Pose(120.000, 60.000)))
+                            new Pose(88.878, 72.000),
+                            new Pose(127.000, 72.000)))
                     .setTangentHeadingInterpolation()
                     .build();
 
             ToGoal3 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(120.000, 60.000),
+                            new Pose(127.000, 72.000),
                             new Pose(94.867, 108.034)))
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42.5))
                     .build();
 
             Off = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(94.867, 108.034),
                             new Pose(90.042, 113.652)))
-                    .setConstantHeadingInterpolation(Math.toRadians(45))
+                    .setConstantHeadingInterpolation(Math.toRadians(42.5))
                     .build();
         }
     }
