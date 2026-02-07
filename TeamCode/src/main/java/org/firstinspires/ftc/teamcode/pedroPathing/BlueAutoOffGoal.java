@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Pedro Pathing - Blue Main", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
 @Configurable
@@ -30,18 +31,19 @@ public class BlueAutoOffGoal extends OpMode {
     // ================= STATE MACHINE =================
     private AutoState state;
     private long stateStartTime;
-    final long INTAKE_TIME_MS = 3000;
+    final long INTAKE_TIME_MS = 1850;
 
     private enum AutoState {
         ToGoal1,
-        SHOOT,
+        SHOOT1,
         TO_RELOAD_1,
         RELOAD_1,
         TO_GOAL_2,
+        SHOOT2,
         SET_TO_RELOAD_2,
         RELOAD_2,
         TO_GOAL_3,
-        SET_TO_RELOAD_3,
+        SHOOT3,
         Off,
         DONE
     }
@@ -77,6 +79,7 @@ public class BlueAutoOffGoal extends OpMode {
     public void start() {
         state = AutoState.ToGoal1;
         stateStartTime = System.currentTimeMillis();
+        follower.setMaxPowerScaling(0.9);
     }
 
     // ================= LOOP =================
@@ -94,31 +97,26 @@ public class BlueAutoOffGoal extends OpMode {
 
     // ================= AUTO LOGIC =================
     private void updateAuto() {
+
         long elapsed = System.currentTimeMillis() - stateStartTime;
 
         switch (state) {
 
             // -------- TO LAUNCH LINE --------
             case ToGoal1:
-                followOnce(paths.ToGoal1, AutoState.SHOOT);
+                shooterMotor1.setPower(.97);
+                shooterMotor2.setPower(.97);
+                followOnce(paths.ToGoal1, AutoState.SHOOT1);
                 break;
 
-            // -------- SHOOT --------
-            case SHOOT:
-                shooterMotor1.setPower(1);
-                shooterMotor2.setPower(1);
+            // -------- SHOOT PRELOAD --------
+            case SHOOT1:
 
-                if (elapsed > 2000 && elapsed < 2200) {
+                if (elapsed < 1900) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2200 && elapsed < 2450) {
-                    intakeMotor.setPower(0);
-                } else if (elapsed > 2450 && elapsed < 2650) {
+                } else if (elapsed > 2200 && elapsed < 2500) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2650 && elapsed < 2900) {
-                    intakeMotor.setPower(0);
-                } else if (elapsed > 2900 && elapsed < 3100) {
-                    intakeMotor.setPower(-1);
-                } else if (elapsed > 3100) {
+                } else if (elapsed > 2500) {
                     intakeMotor.setPower(0);
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
@@ -133,25 +131,46 @@ public class BlueAutoOffGoal extends OpMode {
                 break;
 
             case RELOAD_1:
-                if (stateStartTime == 0) {
+                if (!follower.isBusy()) {
+                    follower.setMaxPowerScaling(0.3);
                     follower.followPath(paths.Reload1);
                 }
 
-                // run intake for 3 seconds
-                if (stateStartTime < INTAKE_TIME_MS) {
-                    intakeMotor.setPower(-1);
+                if (elapsed < INTAKE_TIME_MS) {
+                    intakeMotor.setPower(-.67);
                 } else {
                     intakeMotor.setPower(0);
                 }
 
-                // leave only when BOTH are done
-                if (elapsed >= INTAKE_TIME_MS && !follower.isBusy()) {
+                if (elapsed >= INTAKE_TIME_MS + 250 && elapsed < INTAKE_TIME_MS + 750) {
+                    shooterMotor1.setPower(-.95);
+                    shooterMotor2.setPower(-.95);
+                } else if (elapsed >= INTAKE_TIME_MS + 750) {
+                    shooterMotor1.setPower(0);
+                    shooterMotor2.setPower(0);
                     transitionTo(AutoState.TO_GOAL_2);
                 }
                 break;
 
+
             case TO_GOAL_2:
-                followOnce(paths.ToGoal2, AutoState.SET_TO_RELOAD_2);
+                shooterMotor1.setPower(.95);
+                shooterMotor2.setPower(.95);
+                followOnce(paths.ToGoal2, AutoState.SHOOT2);
+                break;
+
+            case SHOOT2:
+
+                if (elapsed < 2200) {
+                    intakeMotor.setPower(-1);
+                } else if (elapsed > 2200 && elapsed < 2500) {
+                    intakeMotor.setPower(-1);
+                } else if (elapsed > 2500) {
+                    intakeMotor.setPower(0);
+                    shooterMotor1.setPower(0);
+                    shooterMotor2.setPower(0);
+                    transitionTo(AutoState.SET_TO_RELOAD_2);
+                }
                 break;
 
             case SET_TO_RELOAD_2:
@@ -159,11 +178,45 @@ public class BlueAutoOffGoal extends OpMode {
                 break;
 
             case RELOAD_2:
-                followOnce(paths.Reload2, AutoState.TO_GOAL_3);
+                if (!follower.isBusy()) {
+                    follower.setMaxPowerScaling(0.3);
+                    follower.followPath(paths.Reload2);
+                }
+
+                if (elapsed < INTAKE_TIME_MS) {
+                    intakeMotor.setPower(-0.75);
+                } else {
+                    intakeMotor.setPower(0);
+                }
+
+                if (elapsed >= INTAKE_TIME_MS + 250 && elapsed < INTAKE_TIME_MS + 750) {
+                    shooterMotor1.setPower(-.95);
+                    shooterMotor2.setPower(-.95);
+                } else if (elapsed >= INTAKE_TIME_MS + 750) {
+                    shooterMotor1.setPower(0);
+                    shooterMotor2.setPower(0);
+                    transitionTo(AutoState.TO_GOAL_3);
+                }
                 break;
 
             case TO_GOAL_3:
-                followOnce(paths.ToGoal2, AutoState.Off);
+                shooterMotor1.setPower(.95);
+                shooterMotor2.setPower(.95);
+                followOnce(paths.ToGoal3, AutoState.SHOOT3);
+                break;
+
+            case SHOOT3:
+
+                if (elapsed < 2200) {
+                    intakeMotor.setPower(-1);
+                } else if (elapsed > 2200 && elapsed < 2500) {
+                    intakeMotor.setPower(-1);
+                } else if (elapsed > 2500) {
+                    intakeMotor.setPower(0);
+                    shooterMotor1.setPower(0);
+                    shooterMotor2.setPower(0);
+                    transitionTo(AutoState.Off);
+                }
                 break;
 
             case Off:
@@ -182,9 +235,14 @@ public class BlueAutoOffGoal extends OpMode {
         stateStartTime = System.currentTimeMillis();
     }
 
+    private boolean pathStarted = false;
+
     private void followOnce(PathChain path, AutoState next) {
-        if (!follower.isBusy()) {
+        if (!pathStarted) {
             follower.followPath(path);
+            pathStarted = true;
+        } else if (!follower.isBusy()) {
+            pathStarted = false;
             transitionTo(next);
         }
     }
@@ -204,7 +262,7 @@ public class BlueAutoOffGoal extends OpMode {
             ToGoal1 = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(26.000, 128.000),
-                                    new Pose(49.000, 108.500)
+                                    new Pose(49.000, 105.500)
                             )
                     ).setConstantHeadingInterpolation(Math.toRadians(135))
 
@@ -212,44 +270,48 @@ public class BlueAutoOffGoal extends OpMode {
 
             SetToReload1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(49.000, 108.500),
-                                    new Pose(53.900, 92.500)
+                                    new Pose(49.000, 105.500),
+                                    new Pose(53.500, 94.250)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(182.5))
 
                     .build();
 
             Reload1 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(53.500, 92.500),
-                                    new Pose(25.000, 92.000)
+                                    new Pose(53.500, 94.250),
+                                    new Pose(25.500, 94.250)
                             )
                     ).setTangentHeadingInterpolation()
 
                     .build();
 
-            ToGoal2 = follower.pathBuilder().addPath(
+            ToGoal2 = follower.pathBuilder().addPaths(
                             new BezierLine(
-                                    new Pose(25.000, 92.500),
+                                    new Pose(25.500, 94.250),
+                                    new Pose(32.489, 98.000)
+                            ),
+                            new BezierLine(
+                                    new Pose(32.489, 98.000),
                                     new Pose(48.489, 108.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(182.5), Math.toRadians(140))
 
                     .build();
 
             SetToReload2 = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(48.489, 108.000),
-                                    new Pose(55.122, 68.000)
+                                    new Pose(55.000, 69.750)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(140), Math.toRadians(182.5))
 
                     .build();
 
             Reload2 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(55.122, 68.000),
-                                    new Pose(24.000, 68.000)
+                                    new Pose(55.000, 69.750),
+                                    new Pose(20.000, 69.750)
                             )
                     ).setTangentHeadingInterpolation()
 
@@ -257,10 +319,10 @@ public class BlueAutoOffGoal extends OpMode {
 
             ToGoal3 = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(24.000, 68.000),
+                                    new Pose(20.000, 69.750),
                                     new Pose(49.489, 108.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(135))
+                    ).setLinearHeadingInterpolation(Math.toRadians(182.5), Math.toRadians(140))
 
                     .build();
 
@@ -269,7 +331,7 @@ public class BlueAutoOffGoal extends OpMode {
                                     new Pose(49.489, 108.000),
                                     new Pose(53.000, 116.500)
                             )
-                    ).setConstantHeadingInterpolation(Math.toRadians(135))
+                    ).setConstantHeadingInterpolation(Math.toRadians(140))
 
                     .build();
         }
