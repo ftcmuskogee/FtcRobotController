@@ -108,8 +108,8 @@ public class RedOffGoalPP extends OpMode {
 
             // -------- TO LAUNCH LINE --------
             case ToGoal1:
-                shooterMotor1.setPower(.97);
-                shooterMotor2.setPower(.97);
+                shooterMotor1.setPower(.95);
+                shooterMotor2.setPower(.95);
                 followOnce(paths.ToGoal1, AutoState.SHOOT1);
                 break;
 
@@ -118,9 +118,9 @@ public class RedOffGoalPP extends OpMode {
 
                 if (elapsed < 1900) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed >= 1900 && elapsed < 2500) {
+                } else if (elapsed >= 1900 && elapsed < 2400) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed >= 2500) {
+                } else if (elapsed >= 2400) {
                     intakeMotor.setPower(0);
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
@@ -159,18 +159,18 @@ public class RedOffGoalPP extends OpMode {
 
             case TO_GOAL_2:
                 follower.setMaxPowerScaling(0.9);
-                shooterMotor1.setPower(.95);
-                shooterMotor2.setPower(.95);
+                shooterMotor1.setPower(.93);
+                shooterMotor2.setPower(.93);
                 followOnce(paths.ToGoal2, AutoState.SHOOT2);
                 break;
 
             case SHOOT2:
 
-                if (elapsed < 2200) {
+                if (elapsed < 1900) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2200 && elapsed < 2500) {
+                } else if (elapsed > 1900 && elapsed < 2400) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2500) {
+                } else if (elapsed >= 2400) {
                     intakeMotor.setPower(0);
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
@@ -210,18 +210,18 @@ public class RedOffGoalPP extends OpMode {
 
             case TO_GOAL_3:
                 follower.setMaxPowerScaling(0.9);
-                shooterMotor1.setPower(.95);
-                shooterMotor2.setPower(.95);
+                shooterMotor1.setPower(.93);
+                shooterMotor2.setPower(.93);
                 followOnce(paths.ToGoal3, AutoState.SHOOT3);
                 break;
 
             case SHOOT3:
 
-                if (elapsed < 2200) {
+                if (elapsed < 1900) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2200 && elapsed < 2500) {
+                } else if (elapsed > 1900 && elapsed < 2400) {
                     intakeMotor.setPower(-1);
-                } else if (elapsed > 2500) {
+                } else if (elapsed >= 2400) {
                     intakeMotor.setPower(0);
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
@@ -281,42 +281,42 @@ public class RedOffGoalPP extends OpMode {
             SetToReload1 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(95.152, 108.212),
-                            new Pose(90.100, 98.000)))
+                            new Pose(90.100, 96.000)))
                     .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
                     .build();
 
             Reload1 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(90.100, 98.000),
-                            new Pose(122.000, 98.000)))
+                            new Pose(90.100, 96.000),
+                            new Pose(122.000, 96.000)))
                     .setTangentHeadingInterpolation()
                     .build();
 
             ToGoal2 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(122.000, 98.000),
-                            new Pose(95.511, 108.000)))
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42.5))
+                            new Pose(95.152, 108.212)))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
                     .build();
 
             SetToReload2 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(95.511, 108.000),
+                            new Pose(95.152, 108.212),
                             new Pose(88.878, 72.000)))
-                    .setLinearHeadingInterpolation(Math.toRadians(42.5), Math.toRadians(0))
+                    .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(0))
                     .build();
 
             Reload2 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(88.878, 72.000),
-                            new Pose(127.000, 72.000)))
+                            new Pose(129.000, 72.000)))
                     .setTangentHeadingInterpolation()
                     .build();
 
             BackUp = follower.pathBuilder()
                     .addPath(new BezierLine(
 
-                            new Pose(127.000, 72.000),
+                            new Pose(129.000, 72.000),
                             new Pose(88.878, 72.000))
 
                     ).setConstantHeadingInterpolation(Math.toRadians(0))
@@ -325,15 +325,15 @@ public class RedOffGoalPP extends OpMode {
             ToGoal3 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(88.878, 72.000),
-                            new Pose(94.867, 108.034)))
-                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42.5))
+                            new Pose(95.152, 108.212)))
+                    .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(45))
                     .build();
 
             Off = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(94.867, 108.034),
+                            new Pose(95.152, 108.212),
                             new Pose(90.042, 113.652)))
-                    .setConstantHeadingInterpolation(Math.toRadians(42.5))
+                    .setConstantHeadingInterpolation(Math.toRadians(45))
                     .build();
         }
     }
