@@ -30,11 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -58,7 +55,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Dead Reckoning - Neutral Back", group = "Dead Reckoning", preselectTeleOp = "MecanumTeleOp")
 //@Disabled
-public class BlueAutoOffBack extends LinearOpMode {
+public class NeutralOffBack extends LinearOpMode {
 
     // Declare OpMode members.
     private DcMotor frontLeftMotor = null;
@@ -82,19 +79,14 @@ public class BlueAutoOffBack extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("BL");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("FR");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("BR");
-       // DcMotor shooterMotor = hardwareMap.get(DcMotor.class, "SM");
-        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);
         backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        frontRightMotor.setDirection(DcMotor.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-
 
         // If no input, the robot won't drift
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -109,7 +101,7 @@ public class BlueAutoOffBack extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
 
-        // Move to launch line
+        // Move
         frontLeftMotor.setPower(FORWARD_SPEED);
         backLeftMotor.setPower(FORWARD_SPEED);
         frontRightMotor.setPower(FORWARD_SPEED);

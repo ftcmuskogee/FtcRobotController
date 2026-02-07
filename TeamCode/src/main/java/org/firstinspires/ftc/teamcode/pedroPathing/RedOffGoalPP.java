@@ -14,10 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(
-        name = "PedroPathing - Red Main",
-        group = "PP Autonomous",
-        preselectTeleOp = "MecanumTeleOp"
-)
+        name = "PedroPathing - Red Main", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
 @Configurable
 public class RedOffGoalPP extends OpMode {
 
