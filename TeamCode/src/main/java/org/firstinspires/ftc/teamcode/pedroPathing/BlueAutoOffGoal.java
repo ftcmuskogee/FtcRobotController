@@ -42,6 +42,7 @@ public class BlueAutoOffGoal extends OpMode {
         SHOOT2,
         SET_TO_RELOAD_2,
         RELOAD_2,
+        BackUp,
         TO_GOAL_3,
         SHOOT3,
         Off,
@@ -196,12 +197,15 @@ public class BlueAutoOffGoal extends OpMode {
                 } else if (elapsed >= INTAKE_TIME_MS + 750) {
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
-                    transitionTo(AutoState.TO_GOAL_3);
+                    transitionTo(AutoState.BackUp);
                 }
                 break;
 
+            case BackUp:
+                followOnce(paths.BackUp, AutoState.TO_GOAL_3);
+                break;
+
             case TO_GOAL_3:
-                follower.setMaxPowerScaling(0.9);
                 shooterMotor1.setPower(.95);
                 shooterMotor2.setPower(.95);
                 followOnce(paths.ToGoal3, AutoState.SHOOT3);
@@ -210,6 +214,7 @@ public class BlueAutoOffGoal extends OpMode {
             case SHOOT3:
 
                 if (elapsed < 2200) {
+                    follower.setMaxPowerScaling(0.9);
                     intakeMotor.setPower(-1);
                 } else if (elapsed > 2200 && elapsed < 2500) {
                     intakeMotor.setPower(-1);
@@ -257,6 +262,7 @@ public class BlueAutoOffGoal extends OpMode {
         public PathChain ToGoal2;
         public PathChain SetToReload2;
         public PathChain Reload2;
+        public PathChain BackUp;
         public PathChain ToGoal3;
         public PathChain Off;
 
@@ -275,7 +281,7 @@ public class BlueAutoOffGoal extends OpMode {
                                     new Pose(49.000, 105.500),
                                     new Pose(53.500, 94.250)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(182.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(135), Math.toRadians(180))
 
                     .build();
 
@@ -288,16 +294,12 @@ public class BlueAutoOffGoal extends OpMode {
 
                     .build();
 
-            ToGoal2 = follower.pathBuilder().addPaths(
+            ToGoal2 = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(25.500, 94.250),
-                                    new Pose(32.489, 98.000)
-                            ),
-                            new BezierLine(
-                                    new Pose(32.489, 98.000),
                                     new Pose(48.489, 108.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(182.5), Math.toRadians(140))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(140))
 
                     .build();
 
@@ -306,7 +308,7 @@ public class BlueAutoOffGoal extends OpMode {
                                     new Pose(48.489, 108.000),
                                     new Pose(55.000, 69.750)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(140), Math.toRadians(182.5))
+                    ).setLinearHeadingInterpolation(Math.toRadians(140), Math.toRadians(180))
 
                     .build();
 
@@ -319,12 +321,21 @@ public class BlueAutoOffGoal extends OpMode {
 
                     .build();
 
-            ToGoal3 = follower.pathBuilder().addPath(
+            BackUp = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(20.000, 69.750),
+                                    new Pose(55.000, 69.750)
+                            )
+                    ).setConstantHeadingInterpolation(Math.toRadians(180))
+
+                    .build();
+
+            ToGoal3 = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(55.000, 69.750),
                                     new Pose(49.489, 108.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(182.5), Math.toRadians(140))
+                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(140))
 
                     .build();
 

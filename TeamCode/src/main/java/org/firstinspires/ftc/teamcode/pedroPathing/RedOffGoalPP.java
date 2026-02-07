@@ -45,6 +45,7 @@ public class RedOffGoalPP extends OpMode {
         SHOOT2,
         SET_TO_RELOAD_2,
         RELOAD_2,
+        BackUp,
         TO_GOAL_3,
         SHOOT3,
         Off,
@@ -199,8 +200,12 @@ public class RedOffGoalPP extends OpMode {
                 } else if (elapsed >= INTAKE_TIME_MS + 750) {
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
-                    transitionTo(AutoState.TO_GOAL_3);
+                    transitionTo(AutoState.BackUp);
                 }
+                break;
+
+            case BackUp:
+                followOnce(paths.BackUp, AutoState.TO_GOAL_3);
                 break;
 
             case TO_GOAL_3:
@@ -260,6 +265,7 @@ public class RedOffGoalPP extends OpMode {
         public PathChain ToGoal2;
         public PathChain SetToReload2;
         public PathChain Reload2;
+        public PathChain BackUp;
         public PathChain ToGoal3;
         public PathChain Off;
 
@@ -307,9 +313,18 @@ public class RedOffGoalPP extends OpMode {
                     .setTangentHeadingInterpolation()
                     .build();
 
+            BackUp = follower.pathBuilder()
+                    .addPath(new BezierLine(
+
+                            new Pose(127.000, 72.000),
+                            new Pose(88.878, 72.000))
+
+                    ).setConstantHeadingInterpolation(Math.toRadians(0))
+                    .build();
+
             ToGoal3 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(127.000, 72.000),
+                            new Pose(88.878, 72.000),
                             new Pose(94.867, 108.034)))
                     .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(42.5))
                     .build();
