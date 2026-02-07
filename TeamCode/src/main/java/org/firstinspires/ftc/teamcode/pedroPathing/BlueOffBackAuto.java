@@ -9,12 +9,14 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "Pedro Pathing - Back Blue Autonomous", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
 @Configurable
+@Disabled
 public class BlueOffBackAuto extends OpMode {
 
     // ================= FTC / PEDRO =================

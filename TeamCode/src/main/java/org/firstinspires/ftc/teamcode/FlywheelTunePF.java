@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @TeleOp
-//@Disabled
+@Disabled
 public class FlywheelTunePF extends OpMode {
 
     public DcMotorEx Shoot1;

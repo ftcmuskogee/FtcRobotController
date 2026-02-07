@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -55,8 +56,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@Autonomous(name = "Blue Auto - Optional", group = "Blue", preselectTeleOp = "MecanumTeleop")
-// @Disabled
+@Autonomous(name = "Dead Reckoning - Neutral Back", group = "Dead Reckoning", preselectTeleOp = "MecanumTeleOp")
+//@Disabled
 public class BlueAutoOffBack extends LinearOpMode {
 
     // Declare OpMode members.
@@ -108,14 +109,6 @@ public class BlueAutoOffBack extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
 
-        // Step through each leg of the path, ensuring that the OpMode has not been stopped along the way.
-
-        // Wait for arena to be clear
-        while (opModeIsActive() && (runtime.seconds() < 10.0)) {   // 5000 milliseconds
-            telemetry.addData("Path", "Idle: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
         // Move to launch line
         frontLeftMotor.setPower(FORWARD_SPEED);
         backLeftMotor.setPower(FORWARD_SPEED);
@@ -123,65 +116,10 @@ public class BlueAutoOffBack extends LinearOpMode {
         backRightMotor.setPower(FORWARD_SPEED);
 
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.70)) {   // 1700 milliseconds
+        while (opModeIsActive() && (runtime.seconds() < 0.40)) {   // 400 milliseconds
             telemetry.addData("Path", "Moving to Launch Position: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        // Stop
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-
-        sleep(100);
-
-        // Turn towards goal
-        frontLeftMotor.setPower(-TURN_SPEED);
-        backLeftMotor.setPower(-TURN_SPEED);
-        frontRightMotor.setPower(TURN_SPEED);
-        backRightMotor.setPower(TURN_SPEED);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.28)) {   // 280 milliseconds
-            telemetry.addData("Path", "Turning to Goal: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-        // -------------------------
-        // 2. SHOOT FIRST TWO BALLS
-        // -------------------------
-        shooterMotor.setPower(0.95);
-        sleep(1500); // spin-up
-        intakeMotor.setPower(-1);
-        sleep(200);  // feed bal
-        intakeMotor.setPower(0);
-        sleep(1300);  // shooter
-        intakeMotor.setPower(-1);
-        sleep(300); // feed ball
-        intakeMotor.setPower(0);
-        shooterMotor.setPower(0);
-        sleep(150);
-
-        // Stop
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-
-        sleep(100);
-
-        // Move off of launch line (strafe left)
-        frontLeftMotor.setPower(-FORWARD_SPEED);
-        backLeftMotor.setPower(FORWARD_SPEED);
-        frontRightMotor.setPower(FORWARD_SPEED);
-        backRightMotor.setPower(-FORWARD_SPEED);
-
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {   // 500 milliseconds
-            telemetry.addData("Path", "Moving Off of Launch Line: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
         // Stop
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
@@ -192,6 +130,6 @@ public class BlueAutoOffBack extends LinearOpMode {
         telemetry.update();
         sleep(100);
 
-        // current code = 12 second auto
+        // current code = 1/2 second auto
     }
 }
