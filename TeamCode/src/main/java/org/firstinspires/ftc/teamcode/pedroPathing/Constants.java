@@ -25,10 +25,10 @@ public class Constants {
     2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants)   !!!DONE!!!
     Start referring to Panels(192.168.43.1:8001) for values
     ?. Dual PID System (FollowerConstants) if we want to use it !!!Not Now!!!
-    3. Translational PIDF (FollowerConstants)   !!!!!!
-    4. Heading PIDF (FollowerConstants)   !!!!!!
-    5. Drive PIDTF (FollowerConstants)   !!!!!!
-    6. Centripetal Scale (FollowerConstants)   !!!!!!
+    3. Translational PIDF (FollowerConstants)   !!!DONE!!!
+    4. Heading PIDF (FollowerConstants)   !!!DONE!!!
+    5. Drive PIDTF (FollowerConstants)   !!!DONE!!!
+    6. Centripetal Scale (FollowerConstants)   !!!DONE!!!
      tuning! Go do tests!
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
