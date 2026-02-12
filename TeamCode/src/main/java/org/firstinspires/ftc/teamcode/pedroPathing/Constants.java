@@ -25,25 +25,24 @@ public class Constants {
     2. Automatic Tuners, AKA tuning opmode,(MecanumConstants, then FollowerConstants)   !!!DONE!!!
     Start referring to Panels(192.168.43.1:8001) for values
     ?. Dual PID System (FollowerConstants) if we want to use it !!!Not Now!!!
-    3. Translational PIDF (FollowerConstants)   !!!DONE!!!
-    4. Heading PIDF (FollowerConstants)   !!!DONE!!!
-    5. Drive PIDTF (FollowerConstants)   !!!DONE!!!
-    6. Centripetal Scale (FollowerConstants)   !!!DONE!!!
-    THANK YOU AN!!!
-    Done tuning! Go do tests!
+    3. Translational PIDF (FollowerConstants)   !!!!!!
+    4. Heading PIDF (FollowerConstants)   !!!!!!
+    5. Drive PIDTF (FollowerConstants)   !!!!!!
+    6. Centripetal Scale (FollowerConstants)   !!!!!!
+     tuning! Go do tests!
     */
     // pounds-to-kg = 0.453592 * (robot weight in pounds)
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(9.79759519)
+            .mass(10.2511792)
          // Tuning OpMode (Automatic Tuner)
-            .forwardZeroPowerAcceleration(-38.918110060192994) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
-            .lateralZeroPowerAcceleration(-60.82386942408424) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
+            .forwardZeroPowerAcceleration(-26.6869128836423) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
+            .lateralZeroPowerAcceleration(-71.08311597466205) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
             // Dual PID System (after Tuning OpMode) if we want to use it, set following to "true"
             .useSecondaryTranslationalPIDF(false)
             .useSecondaryHeadingPIDF(false)
             .useSecondaryDrivePIDF(false)
             // Translational (set P, I, D, and F)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.02, 0, 0.001, 0.033))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.0225, 0, 0.0005, 0.02675))
             // if using dual PIDF VVV (could be diff P,I,D,and F values)
             //.secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
             //  Heading (set NEW P, I, D, and F)
@@ -58,7 +57,7 @@ public class Constants {
             ;
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .maxPower(0.6)
+            .maxPower(0.75)
             .rightFrontMotorName("FR")
             .rightRearMotorName("BR")
             .leftRearMotorName("BL")
@@ -67,16 +66,15 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE)
-
             // Tuning Opmode (Automatic Tuners)
-            .xVelocity(51.601775882750985) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
-           .yVelocity(34.51689135934424) // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
+            .xVelocity(53.85532120832308) // velocity on driver hub after tuning opmode(Forward Velocity Tuner)
+           .yVelocity(43.03991747277929) // velocity on driver hub after tuning opmode(Lateral Velocity Tuner)
             ;
     public static PinpointConstants localizerConstants = new PinpointConstants()
             // Forward/Backward is +X/-X
             // Left/Right is +Y/-Y
-            .forwardPodY(-(6.5)) // Distance from center (14/2) (y axis) // ||
-            .strafePodX((8.5)) // Distance from center (18/2) (x axis)  // --
+            .forwardPodY(-(6.85)) // Distance from center (14/2) (y axis) // ||   // On back right
+            .strafePodX((8.375)) // Distance from center (17.75/2) (x axis)  // --   // On back left
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("ODO") // Ohh, Dee, Ohh (all capital)
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
@@ -85,7 +83,7 @@ public class Constants {
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             ;
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.75, 2500, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.75, 2250, 1, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
