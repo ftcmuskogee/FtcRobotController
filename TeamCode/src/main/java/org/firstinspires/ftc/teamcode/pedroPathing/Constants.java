@@ -37,22 +37,22 @@ public class Constants {
          // Tuning OpMode (Automatic Tuner)
             .forwardZeroPowerAcceleration(-26.6869128836423) // deceleration on driver hub after tuning opmode(Forward Zero Power Acceleration)
             .lateralZeroPowerAcceleration(-71.08311597466205) // deceleration on driver hub after tuning opmode(Lateral Zero Power Acceleration)
-            // Dual PID System (after Tuning OpMode) if we want to use it, set following to "true"
+         // Dual PID System (after Tuning OpMode) if we want to use it, set following to "true"
             .useSecondaryTranslationalPIDF(false)
             .useSecondaryHeadingPIDF(false)
             .useSecondaryDrivePIDF(false)
-            // Translational (set P, I, D, and F)
+         // Translational (set P, I, D, and F)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.0225, 0, 0.0005, 0.02675))
-            // if using dual PIDF VVV (could be diff P,I,D,and F values)
-            //.secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
-            //  Heading (set NEW P, I, D, and F)
+         // if using dual PIDF VVV (could be diff P,I,D,and F values)
+         //.secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
+         //  Heading (set NEW P, I, D, and F)
             .headingPIDFCoefficients(new PIDFCoefficients(0.6, 0, 0.002, 0.01))
-            //if using dual PIDF VVV (could be diff P,I,D,and F values)
-            //.secondaryHeadingPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
-            //  Drive (set NEW P, I, D, T, and F)
+         //if using dual PIDF VVV (could be diff P,I,D,and F values)
+         //.secondaryHeadingPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
+         //  Drive (set NEW P, I, D, T, and F)
             .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.0075, 0, 0.00003, 0.5, 0.0045))
-            //if using dual PIDTF VVV (could be diff P, I, D, T, and F values)
-            //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
+         //if using dual PIDTF VVV (could be diff P, I, D, T, and F values)
+         //.secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(P, I, D, T, F))
             .centripetalScaling(0.008)
             ;
 
@@ -83,7 +83,7 @@ public class Constants {
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             ;
 
-    public static PathConstraints pathConstraints = new PathConstraints(0.75, 2250, 1, 1);
+    public static PathConstraints pathConstraints = new PathConstraints(0.75, 1975, 1, 1.001);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
