@@ -46,7 +46,7 @@ public class Constants {
          // if using dual PIDF VVV (could be diff P,I,D,and F values)
          //.secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
          //  Heading (set NEW P, I, D, and F)
-            .headingPIDFCoefficients(new PIDFCoefficients(0.6, 0, 0.002, 0.01))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.585, 0, 0.002, 0.01))
          //if using dual PIDF VVV (could be diff P,I,D,and F values)
          //.secondaryHeadingPIDFCoefficients(new PIDFCoefficients(P,I,D,F))
          //  Drive (set NEW P, I, D, T, and F)
@@ -57,7 +57,7 @@ public class Constants {
             ;
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .maxPower(0.75)
+            .maxPower(0.8)
             .rightFrontMotorName("FR")
             .rightRearMotorName("BR")
             .leftRearMotorName("BL")

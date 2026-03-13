@@ -103,9 +103,18 @@ public class BlueOffGoalPP extends OpMode {
 
             // -------- TO LAUNCH LINE --------
             case ToGoal1:
-                shooterMotor1.setPower(.97);
-                shooterMotor2.setPower(.97);
-                followOnce(paths.ToGoal1, AutoState.SHOOT1);
+                if (!follower.isBusy()) {
+                    follower.followPath(paths.ToGoal1);
+                }
+
+                if (elapsed <= 500) {
+                    shooterMotor1.setPower(0);
+                    shooterMotor2.setPower(0);
+                } else {
+                    shooterMotor1.setPower(0.95);
+                    shooterMotor2.setPower(0.95);
+                    transitionTo(AutoState.SHOOT1);
+                }
                 break;
 
             // -------- SHOOT PRELOAD --------

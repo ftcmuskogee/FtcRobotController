@@ -54,7 +54,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
             // Set limits to the servos.
             shootServo.scaleRange(0.15, 0.275); // ?
-            hoodServo.scaleRange(0.09, 0.21);
+            hoodServo.scaleRange(0.09, 0.105);
 
             waitForStart();
 

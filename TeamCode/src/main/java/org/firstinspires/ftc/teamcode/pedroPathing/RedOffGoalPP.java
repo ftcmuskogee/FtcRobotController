@@ -33,6 +33,9 @@ public class RedOffGoalPP extends OpMode {
     private AutoState state;
     private long stateStartTime;
     final long INTAKE_TIME_MS = 1850;
+    long toGoal1MoveStartTime = stateStartTime;
+    boolean StartShooter = false;
+    boolean ShooterRunning = false;
 
     private enum AutoState {
         ToGoal1,
@@ -71,7 +74,7 @@ public class RedOffGoalPP extends OpMode {
         shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        shooterServo.scaleRange(0.275, 0.475);   // 0, 1     // Closed, Open
+        shooterServo.scaleRange(0.20, 0.50);   // 0, 1     // Closed, Open
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(new Pose(118, 128, Math.toRadians(45)));
@@ -88,6 +91,7 @@ public class RedOffGoalPP extends OpMode {
         state = AutoState.ToGoal1;
         stateStartTime = System.currentTimeMillis();
         follower.setMaxPowerScaling(0.9);
+        shooterServo.setPosition(0);
     }
 
     // ================= LOOP =================
@@ -112,10 +116,34 @@ public class RedOffGoalPP extends OpMode {
 
             // -------- TO LAUNCH LINE --------
             case ToGoal1:
-                shooterMotor1.setPower(.95);
-                shooterMotor2.setPower(.95);
-                followOnce(paths.ToGoal1, RedOffGoalPP.AutoState.SHOOT1);
+
+                if (!pathStarted) {
+                    follower.followPath(paths.ToGoal1);
+                    pathStarted = true;
+                    toGoal1MoveStartTime = System.currentTimeMillis();
+                    StartShooter = true;
+                }
+
+                // Start shooter 0.5 sec after movement begins
+                if (StartShooter && !ShooterRunning &&
+                        System.currentTimeMillis() - toGoal1MoveStartTime >= 500) {
+
+                    shooterMotor1.setPower(0.95);
+                    shooterMotor2.setPower(0.95);
+                    ShooterRunning = true;
+                }
+
+                // When path finishes → shoot
+                if (!follower.isBusy() && ShooterRunning) {
+                    pathStarted = false;
+                    StartShooter = false;
+                    ShooterRunning = false;
+                    transitionTo(AutoState.SHOOT1);
+                }
+
                 break;
+
+
 
             // -------- SHOOT PRELOAD --------
             case SHOOT1:
@@ -288,26 +316,26 @@ public class RedOffGoalPP extends OpMode {
                     .addPath(new BezierLine(
                             new Pose(118, 128),
                             new Pose(91, 108.212)))
-                    .setConstantHeadingInterpolation(Math.toRadians(35))
+                    .setLinearHeadingInterpolation(Math.toRadians(45), Math.toRadians(35))
                     .build();
 
             SetToReload1 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(91, 108.212),
-                            new Pose(90.100, 96.000)))
+                            new Pose(90.1, 96)))
                     .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(0))
                     .build();
 
             Reload1 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(90.100, 96.000),
-                            new Pose(125.000, 96.000)))
-                    .setTangentHeadingInterpolation()
+                            new Pose(90.1, 96),
+                            new Pose(125, 96)))
+                    .setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
 
             ToGoal2 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(125.000, 96.000),
+                            new Pose(125, 96),
                             new Pose(95.152, 108.212)))
                     .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(35))
                     .build();
@@ -315,27 +343,27 @@ public class RedOffGoalPP extends OpMode {
             SetToReload2 = follower.pathBuilder()
                     .addPath(new BezierLine(
                             new Pose(95.152, 108.212),
-                            new Pose(88.878, 72.000)))
+                            new Pose(88.878, 72)))
                     .setLinearHeadingInterpolation(Math.toRadians(35), Math.toRadians(0))
                     .build();
 
             Reload2 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(88.878, 72.000),
-                            new Pose(135.000, 72.000)))
-                    .setTangentHeadingInterpolation()
+                            new Pose(88.878, 72),
+                            new Pose(135, 72)))
+                    .setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
 
             BackUp = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(135.000, 72.000),
-                            new Pose(88.878, 72.000))
+                            new Pose(135, 72),
+                            new Pose(88.878, 72))
                     ).setConstantHeadingInterpolation(Math.toRadians(0))
                     .build();
 
             ToGoal3 = follower.pathBuilder()
                     .addPath(new BezierLine(
-                            new Pose(88.878, 72.000),
+                            new Pose(88.878, 72),
                             new Pose(95.152, 108.212)))
                     .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(35))
                     .build();
