@@ -51,7 +51,7 @@ public class Teleopp extends OpMode {
             //Make the last parameter false for field-centric
             //This is the normal version to use in the TeleOp
             follower.setTeleOpDrive(
-                gamepad1.left_stick_y,
+                -gamepad1.left_stick_y,
                 -gamepad1.left_stick_x * 1.1,
                 -gamepad1.right_stick_x,
                     false // Is Robot Centric?
