@@ -5,17 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
-import org.firstinspires.ftc.teamcode.mechanisms.aprilTagWebcam;
+import android.util.Size;
+
+import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
 
-    aprilTagWebcam aprilTag = new aprilTagWebcam();
-
-
-    // PID values (tune if needed)
+    // PID
     double kP = 0.03;
     double kD = 0.001;
     double lastError = 0;
@@ -27,8 +28,7 @@ public class MecanumTeleOp extends LinearOpMode {
     }
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
+    public void runOpMode() {
 
         // ---------------- MOTORS ----------------
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("FL");
@@ -43,7 +43,7 @@ public class MecanumTeleOp extends LinearOpMode {
         Servo shootServo = hardwareMap.get(Servo.class, "SS");
         Servo hoodServo = hardwareMap.get(Servo.class, "HOOD");
 
-        // Motor directions
+        // Directions
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -51,9 +51,8 @@ public class MecanumTeleOp extends LinearOpMode {
 
         shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Zero power behavior
+        // Brake behavior
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -65,82 +64,114 @@ public class MecanumTeleOp extends LinearOpMode {
 
         shootServo.scaleRange(0.15, 0.275);
         hoodServo.scaleRange(0.09, 0.21);
-        aprilTag.init(hardwareMap, telemetry);
-
-        waitForStart();
-        if (isStopRequested()) return;
 
         shootServo.setPosition(0.9);
         hoodServo.setPosition(0.20);
 
-        while (opModeIsActive()) {
-            aprilTag.update();
+        // ---------------- APRILTAG (LOW POWER) ----------------
+        AprilTagProcessor aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(false)
+                .setDrawCubeProjection(false)
+                .setDrawTagOutline(false)
+                .build();
 
+        // lowest power
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(640, 480)) // lowest power
+                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
+                .setAutoStopLiveView(true)
+                .addProcessor(aprilTag)
+                .build();
+
+        // Start OFF
+        visionPortal.setProcessorEnabled(aprilTag, false);
+
+        boolean visionEnabled = false;
+        int frameSkip = 0;
+
+        telemetry.addLine("Initialized");
+        telemetry.update();
+
+        waitForStart();
+        if (isStopRequested()) return;
+
+        // ---------------- MAIN LOOP ----------------
+        while (opModeIsActive()) {
+
+            // -------- Vision Toggle --------
+            AprilTagDetection targetTag = null;
+
+            if (gamepad1.right_bumper) {
+                visionPortal.resumeStreaming();
+                visionPortal.setProcessorEnabled(aprilTag, true);
+                visionEnabled = true;
+            } else if (!gamepad1.right_bumper && targetTag == null) {
+                visionPortal.setProcessorEnabled(aprilTag, false);
+                visionPortal.stopStreaming();
+                visionEnabled = false;
+            }
+
+            // -------- AprilTag Detection --------
+
+            if (visionEnabled) {
+                frameSkip++;
+
+                if (frameSkip % 3 == 0) {
+                    for (AprilTagDetection tag : aprilTag.getDetections()) {
+                        if (tag.id == 20 || tag.id == 24) {
+                            targetTag = tag;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // -------- Driving --------
             double y = gamepad1.left_stick_y;
             double x = -gamepad1.left_stick_x * 1.1;
             double rx = -gamepad1.right_stick_x;
 
-            boolean snapActive = gamepad1.right_bumper;
+            // Snap-to-target
+            if (gamepad1.right_bumper && targetTag != null) {
 
-            if (snapActive) {
+                double desiredYaw = (targetTag.id == 20) ? 139 : 39;
 
-                AprilTagDetection tag20 = aprilTag.getTagByspecificId(20);
-                AprilTagDetection tag24 = aprilTag.getTagByspecificId(24);
+                double yawError = targetTag.ftcPose.yaw;
+                double correctedError = yawError - desiredYaw;
 
-                AprilTagDetection targetTag = null;
-                double desiredYaw = 0;
-
-                if (tag20 != null) {
-                    targetTag = tag20;
-                    desiredYaw = 139;
-                } else if (tag24 != null) {
-                    targetTag = tag24;
-                    desiredYaw = 35;
+                if (Math.abs(correctedError) > 1.5) {
+                    rx = headingPID(correctedError);
+                } else {
+                    rx = 0;
                 }
 
-                if (targetTag != null) {
+                rx = Math.max(-0.4, Math.min(0.4, rx));
 
-                    double yawError = targetTag.ftcPose.yaw;
-                    double correctedError = yawError - desiredYaw;
-
-                    if (Math.abs(correctedError) > 1.5) {
-                        rx = headingPID(correctedError);
-                    } else {
-                        rx = 0;
-                    }
-
-                    rx = Math.max(-0.4, Math.min(0.4, rx));
-
-                    telemetry.addData("Snap Mode", "ACTIVE");
-                    telemetry.addData("Tag ID", targetTag.id);
-                    telemetry.addData("Yaw Error", yawError);
-                    telemetry.addData("Corrected Error", correctedError);
-                }
+                telemetry.addData("Snap", "ACTIVE");
+                telemetry.addData("Tag", targetTag.id);
             }
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+            double fl = (y + x + rx) / denominator;
+            double bl = (y - x + rx) / denominator;
+            double fr = (y - x - rx) / denominator;
+            double br = (y + x - rx) / denominator;
 
             double driveMult = 1;
-            if (gamepad1.left_trigger >= 0.05) {
-                driveMult = 0.35;
-            } else if (gamepad1.right_trigger >= 0.05) {
-                driveMult = 1.25;
-            }
+            if (gamepad1.left_trigger > 0.05) driveMult = 0.35;
+            if (gamepad1.right_trigger > 0.05) driveMult = 1.25;
 
-            frontLeftMotor.setPower(frontLeftPower * driveMult);
-            backLeftMotor.setPower(backLeftPower * driveMult);
-            frontRightMotor.setPower(frontRightPower * driveMult);
-            backRightMotor.setPower(backRightPower * driveMult);
+            frontLeftMotor.setPower(fl * driveMult);
+            backLeftMotor.setPower(bl * driveMult);
+            frontRightMotor.setPower(fr * driveMult);
+            backRightMotor.setPower(br * driveMult);
 
-
-            if (gamepad2.right_trigger >= 0.025) {
+            // -------- Shooter --------
+            if (gamepad2.right_trigger > 0.05) {
                 shooterMotor1.setPower(1);
                 shooterMotor2.setPower(1);
-            } else if (gamepad2.left_trigger >= 0.025) {
+            } else if (gamepad2.left_trigger > 0.05) {
                 shooterMotor1.setPower(-1);
                 shooterMotor2.setPower(-1);
             } else {
@@ -148,29 +179,18 @@ public class MecanumTeleOp extends LinearOpMode {
                 shooterMotor2.setPower(0);
             }
 
-            if (gamepad2.a) {
-                shootServo.setPosition(0);
-            }
-            if (gamepad2.b) {
-                shootServo.setPosition(0.9);
-            }
+            // Shoot servo
+            if (gamepad2.a) shootServo.setPosition(0);
+            if (gamepad2.b) shootServo.setPosition(0.9);
 
+            // Intake
+            if (gamepad2.dpad_down) intakeMotor.setPower(1);
+            else if (gamepad2.dpad_up) intakeMotor.setPower(-1);
+            else intakeMotor.setPower(0);
 
-            if (gamepad2.dpad_down) {
-                intakeMotor.setPower(1);
-            } else if (gamepad2.dpad_up) {
-                intakeMotor.setPower(-1);
-            } else {
-                intakeMotor.setPower(0);
-            }
-
-
-            if (gamepad2.x) {
-                hoodServo.setPosition(1);
-            }
-            if (gamepad2.y) {
-                hoodServo.setPosition(0);
-            }
+            // Hood
+            if (gamepad2.x) hoodServo.setPosition(1);
+            if (gamepad2.y) hoodServo.setPosition(0);
 
             telemetry.update();
         }

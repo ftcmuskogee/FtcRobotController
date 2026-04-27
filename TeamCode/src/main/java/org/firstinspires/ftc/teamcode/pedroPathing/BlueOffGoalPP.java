@@ -58,7 +58,7 @@ public class BlueOffGoalPP extends OpMode {
 
         shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -111,8 +111,8 @@ public class BlueOffGoalPP extends OpMode {
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
                 } else {
-                    shooterMotor1.setPower(0.95);
-                    shooterMotor2.setPower(0.95);
+                    shooterMotor1.setPower(1);
+                    shooterMotor2.setPower(1);
                     transitionTo(AutoState.SHOOT1);
                 }
                 break;
@@ -164,8 +164,8 @@ public class BlueOffGoalPP extends OpMode {
 
             case TO_GOAL_2:
                 follower.setMaxPowerScaling(0.9);
-                shooterMotor1.setPower(.95);
-                shooterMotor2.setPower(.95);
+                shooterMotor1.setPower(1);
+                shooterMotor2.setPower(1);
                 followOnce(paths.ToGoal2, AutoState.SHOOT2);
                 break;
 
@@ -215,8 +215,8 @@ public class BlueOffGoalPP extends OpMode {
                 break;
 
             case TO_GOAL_3:
-                shooterMotor1.setPower(.95);
-                shooterMotor2.setPower(.95);
+                shooterMotor1.setPower(1);
+                shooterMotor2.setPower(1);
                 followOnce(paths.ToGoal3, AutoState.SHOOT3);
                 break;
 
