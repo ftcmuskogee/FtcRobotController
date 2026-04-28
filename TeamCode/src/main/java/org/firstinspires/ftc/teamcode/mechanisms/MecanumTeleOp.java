@@ -88,7 +88,6 @@ public class MecanumTeleOp extends LinearOpMode {
         visionPortal.setProcessorEnabled(aprilTag, false);
 
         boolean visionEnabled = false;
-        int frameSkip = 0;
 
         telemetry.addLine("Initialized");
         telemetry.update();
@@ -106,7 +105,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 visionPortal.resumeStreaming();
                 visionPortal.setProcessorEnabled(aprilTag, true);
                 visionEnabled = true;
-            } else if (!gamepad1.right_bumper && targetTag == null) {
+            } else {
                 visionPortal.setProcessorEnabled(aprilTag, false);
                 visionPortal.stopStreaming();
                 visionEnabled = false;
@@ -115,14 +114,11 @@ public class MecanumTeleOp extends LinearOpMode {
             // -------- AprilTag Detection --------
 
             if (visionEnabled) {
-                frameSkip++;
 
-                if (frameSkip % 3 == 0) {
-                    for (AprilTagDetection tag : aprilTag.getDetections()) {
-                        if (tag.id == 20 || tag.id == 24) {
-                            targetTag = tag;
-                            break;
-                        }
+                for (AprilTagDetection tag : aprilTag.getDetections()) {
+                    if (tag.id == 20 || tag.id == 24) {
+                        targetTag = tag;
+                        break;
                     }
                 }
             }
@@ -135,18 +131,21 @@ public class MecanumTeleOp extends LinearOpMode {
             // Snap-to-target
             if (gamepad1.right_bumper && targetTag != null) {
 
-                double desiredYaw = (targetTag.id == 20) ? 139 : 39;
+                double error = targetTag.ftcPose.bearing;
 
-                double yawError = targetTag.ftcPose.yaw;
-                double correctedError = yawError - desiredYaw;
+                if (Math.abs(error) > 0.5) {
 
-                if (Math.abs(correctedError) > 1.5) {
-                    rx = headingPID(correctedError);
+                    double output = headingPID(error);
+
+                    if (Math.abs(output) < 0.08) {
+                        output = Math.signum(output) * 0.08;
+                    }
+
+                    rx = Math.max(-0.7, Math.min(0.7, output));
+
                 } else {
                     rx = 0;
                 }
-
-                rx = Math.max(-0.4, Math.min(0.4, rx));
 
                 telemetry.addData("Snap", "ACTIVE");
                 telemetry.addData("Tag", targetTag.id);
