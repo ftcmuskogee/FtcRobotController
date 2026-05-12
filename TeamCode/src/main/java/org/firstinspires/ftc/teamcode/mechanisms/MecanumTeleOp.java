@@ -70,24 +70,22 @@ public class MecanumTeleOp extends LinearOpMode {
 
         // ---------------- APRILTAG (LOW POWER) ----------------
         AprilTagProcessor aprilTag = new AprilTagProcessor.Builder()
-                .setDrawAxes(false)
-                .setDrawCubeProjection(false)
-                .setDrawTagOutline(false)
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagOutline(true)
                 .build();
 
         // lowest power
         VisionPortal visionPortal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .setCameraResolution(new Size(640, 480)) // lowest power
-                .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                .setAutoStopLiveView(true)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+                .enableLiveView(true)
                 .addProcessor(aprilTag)
                 .build();
 
         // Start OFF
-        visionPortal.setProcessorEnabled(aprilTag, false);
-
-        boolean visionEnabled = false;
+        visionPortal.setProcessorEnabled(aprilTag, true);
 
         telemetry.addLine("Initialized");
         telemetry.update();
@@ -97,24 +95,10 @@ public class MecanumTeleOp extends LinearOpMode {
 
         // ---------------- MAIN LOOP ----------------
         while (opModeIsActive()) {
-
             // -------- Vision Toggle --------
             AprilTagDetection targetTag = null;
 
             if (gamepad1.right_bumper) {
-                visionPortal.resumeStreaming();
-                visionPortal.setProcessorEnabled(aprilTag, true);
-                visionEnabled = true;
-            } else {
-                visionPortal.setProcessorEnabled(aprilTag, false);
-                visionPortal.stopStreaming();
-                visionEnabled = false;
-            }
-
-            // -------- AprilTag Detection --------
-
-            if (visionEnabled) {
-
                 for (AprilTagDetection tag : aprilTag.getDetections()) {
                     if (tag.id == 20 || tag.id == 24) {
                         targetTag = tag;
@@ -158,8 +142,8 @@ public class MecanumTeleOp extends LinearOpMode {
             double br = (y + x - rx) / denominator;
 
             double driveMult = 1;
-            if (gamepad1.left_trigger > 0.05) driveMult = 0.35;
-            if (gamepad1.right_trigger > 0.05) driveMult = 1.25;
+            if (gamepad1.left_trigger > 0.05) driveMult = 0.75;
+            if (gamepad1.right_trigger > 0.05) driveMult = 1.75;
 
             frontLeftMotor.setPower(fl * driveMult);
             backLeftMotor.setPower(bl * driveMult);
