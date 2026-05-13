@@ -112,8 +112,8 @@ public class RedOffGoalPP extends OpMode {
 
             // -------- TO LAUNCH LINE --------
             case ToGoal1:
-                shooterMotor1.setPower(.95);
-                shooterMotor2.setPower(.95);
+                shooterMotor1.setPower(.975);
+                shooterMotor2.setPower(.975);
                 followOnce(paths.ToGoal1, RedOffGoalPP.AutoState.SHOOT1);
                 break;
 
@@ -152,11 +152,11 @@ public class RedOffGoalPP extends OpMode {
                     intakeMotor.setPower(0);
                 }
 
-                if (elapsed >= INTAKE_TIME_MS + 250 && elapsed < INTAKE_TIME_MS + 850) {
+                if (elapsed >= INTAKE_TIME_MS + 250 && elapsed < INTAKE_TIME_MS + 300) {
                     shooterMotor1.setPower(-.95);
                     shooterMotor2.setPower(-.95);
                     intakeMotor.setPower(.90);
-                } else if (elapsed >= INTAKE_TIME_MS + 850) {
+                } else if (elapsed >= INTAKE_TIME_MS + 300) {
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
                     intakeMotor.setPower(0);
@@ -167,8 +167,8 @@ public class RedOffGoalPP extends OpMode {
 
             case TO_GOAL_2:
                 follower.setMaxPowerScaling(0.9);
-                shooterMotor1.setPower(.92);
-                shooterMotor2.setPower(.92);
+                shooterMotor1.setPower(.975);
+                shooterMotor2.setPower(.975);
                 followOnce(paths.ToGoal2, RedOffGoalPP.AutoState.SHOOT2);
                 break;
 
@@ -204,16 +204,16 @@ public class RedOffGoalPP extends OpMode {
                     intakeMotor.setPower(0);
                 }
 
-                if (elapsed >= INTAKE_TIME_MS + 250 && elapsed < INTAKE_TIME_MS + 850) {
+                if (elapsed >= INTAKE_TIME_MS + 250 && elapsed < INTAKE_TIME_MS + 300) {
                     shooterMotor1.setPower(-.95);
                     shooterMotor2.setPower(-.95);
                     intakeMotor.setPower(.90);
-                } else if (elapsed >= INTAKE_TIME_MS + 850) {
+                } else if (elapsed >= INTAKE_TIME_MS + 300) {
                     shooterMotor1.setPower(0);
                     shooterMotor2.setPower(0);
                     intakeMotor.setPower(0);
                     transitionTo(RedOffGoalPP.AutoState.BackUp);
-                }
+                }  
                 break;
 
             case BackUp:

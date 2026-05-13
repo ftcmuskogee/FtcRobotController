@@ -64,7 +64,7 @@ public class MecanumTeleOp extends LinearOpMode {
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         shootServo.scaleRange(0.15, 0.275);
-        hoodServo.scaleRange(0.09, 0.21);
+        hoodServo.scaleRange(0.1825, 0.195);
         aprilTag.init(hardwareMap, telemetry);
 
         waitForStart();
@@ -143,10 +143,20 @@ public class MecanumTeleOp extends LinearOpMode {
             } else if (gamepad2.left_trigger >= 0.025) {
                 shooterMotor1.setPower(-1);
                 shooterMotor2.setPower(-1);
-            } else {
+            }
+            else {
                 shooterMotor1.setPower(0);
                 shooterMotor2.setPower(0);
             }
+
+            /*if (gamepad2.right_bumper){
+                shooterMotor1.setPower(-1);
+                intakeMotor.setPower((-1));
+            }
+            else{ shooterMotor1.setPower(0);
+                intakeMotor.setPower(0);
+
+            } */
 
             if (gamepad2.a) {
                 shootServo.setPosition(0);
