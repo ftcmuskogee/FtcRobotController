@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 @Autonomous(name = "Shoot =12= RED Main", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
@@ -28,6 +29,8 @@ public class RedALLOffGoalPP extends OpMode {
     private DcMotor shooterMotor1;
     private DcMotor shooterMotor2;
     private DcMotor intakeMotor;
+    private Servo Gate;
+    private Servo Hood;
 
     // ================= STATE =================
     private AutoState state;
@@ -38,7 +41,6 @@ public class RedALLOffGoalPP extends OpMode {
     public final double initShootPow = 0.895;
     public double shootPow = initShootPow;
     public double shootAddPow = 0;
-    public double needX = 125;
 
     private enum AutoState {
         ToGoal1,
@@ -72,11 +74,12 @@ public class RedALLOffGoalPP extends OpMode {
         shooterMotor1 = hardwareMap.get(DcMotor.class, "S1");
         shooterMotor2 = hardwareMap.get(DcMotor.class, "S2");
         intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
+        Gate = hardwareMap.get(Servo.class,"Gate");
+        Hood = hardwareMap.get(Servo.class, "Hood");
 
         shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
         shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -86,6 +89,9 @@ public class RedALLOffGoalPP extends OpMode {
         follower.setStartingPose(startPose);
 
         paths = new Paths(follower);
+
+        Gate.setPosition(1);
+        Hood.setPosition(0.4);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
@@ -116,7 +122,7 @@ public class RedALLOffGoalPP extends OpMode {
 
         double volts = getBatteryVoltage();
 
-        if (volts <= 10) {
+        if (volts <= 9.75) {
             shootPow = 1;
         } else {
             shootPow = initShootPow + shootAddPow;
@@ -126,12 +132,13 @@ public class RedALLOffGoalPP extends OpMode {
         updateStateTimer();
         updateAuto();
 
-        panelsTelemetry.debug("State - ",state);
-        panelsTelemetry.debug("X - ",Math.round(follower.getPose().getX()));
-        panelsTelemetry.debug("Y - ",Math.round(follower.getPose().getY()));
-        panelsTelemetry.debug("Heading - ",Math.round(Math.toDegrees(follower.getPose().getHeading())));
-        panelsTelemetry.debug("Shooter Power - ",Math.round(shootPow));
-        panelsTelemetry.debug("Estimated Voltage - ",Math.round(volts));
+        panelsTelemetry.addData("State - ", state);
+        panelsTelemetry.addData("X - ", Math.round(follower.getPose().getX()));
+        panelsTelemetry.addData("Y - ", Math.round(follower.getPose().getY()));
+        panelsTelemetry.addData("Heading - ", Math.round(Math.toDegrees(follower.getPose().getHeading())));
+        panelsTelemetry.addData("Shooter Power - ", Math.round(shootPow));
+        panelsTelemetry.addData("Estimated Voltage - ", Math.round(volts));
+        panelsTelemetry.addData("Gate Status - ", (Gate.getPosition() == 0 ? "OPEN" : "CLOSED"));
         panelsTelemetry.update(telemetry);
     }
 
@@ -154,41 +161,38 @@ public class RedALLOffGoalPP extends OpMode {
         switch (state) {
 
             case ToGoal1: //                                                                        TO GOAL 1
-                if (elapsed() < 150) {
-                    shooterMotor1.setPower(-.75);
-                    shooterMotor2.setPower(-.75);
-                    intakeMotor.setPower(-0.125);
-                } else {
-                    shooterMotor1.setPower(shootPow);
-                    shooterMotor2.setPower(shootPow);
-                    intakeMotor.setPower(0);
-                }
+                Gate.setPosition(.65);
+                shooterMotor1.setPower(1);
+                shooterMotor2.setPower(1);
                 stopEarly = 0;
                 followOnce(paths.toGoal1(), AutoState.SHOOT1);
                 break;
 
-            case SHOOT1: //                                                                        SHOOT 1
+            case SHOOT1: //                                                                         SHOOT 1
+                if (elapsed() >= 1000) Gate.setPosition(0); else Gate.setPosition(.65);
                 shooterMotor1.setPower(shootPow);
                 shooterMotor2.setPower(shootPow);
-                if (!follower.isBusy() && (elapsed() >= 450 && elapsed() <= 2675)) {
-                    intakeMotor.setPower(1);
-                    if (shootPow + 0.01 <= 1) {
+                if (!follower.isBusy() && (elapsed() >= 1850 && elapsed() <= 3250)) {
+                    intakeMotor.setPower(0.75);
+                    if (shootPow + 0.01 <= 0.95) {
                         shootAddPow += 0.01;
+                    } else {
+                        shootPow = 0.95;
                     }
-                } else if (elapsed() >= 2250) {
+                } else if (elapsed() > 3250) {
                     stopMotors();
                     transitionTo(AutoState.TO_RELOAD_1);
                 }
                 break;
 
-            case TO_RELOAD_1: //                                                                        To RELOAD 1
+            case TO_RELOAD_1: //                                                                    TO RELOAD 1
+                Gate.setPosition(.65);
                 stopEarly = 1;
                 followOnce(paths.setToReload1(), AutoState.RELOAD_1);
                 break;
 
-            case RELOAD_1: //                                                                        RELOAD 1
-
-                needX = 125;
+            case RELOAD_1: //                                                                       RELOAD 1
+                Gate.setPosition(.65);
 
                 stopEarly = 2;
 
@@ -196,35 +200,28 @@ public class RedALLOffGoalPP extends OpMode {
 
                 intakeMotor.setPower(0.9);
 
-                if (follower.getPathCompletion() >= 0.35) {
-                    shooterMotor1.setPower(-0.85);
-                    shooterMotor2.setPower(-0.85);
-                }
                 if (follower.getPathCompletion() >= 0.95) {
                     stopMotors();
                     transitionTo(AutoState.TO_GOAL_2);
                 }
                 break;
 
-            case TO_GOAL_2: //                                                                        TO GOAL 2
+            case TO_GOAL_2: //                                                                      TO GOAL 2
+                Gate.setPosition(.65);
                 stopEarly = 0;
-                if (elapsed() < 150) {
-                    shooterMotor1.setPower(-0.75);
-                    shooterMotor2.setPower(-0.75);
-                    intakeMotor.setPower(-0.125);
-                } else {
-                    shooterMotor1.setPower(shootPow);
-                    shooterMotor2.setPower(shootPow);
-                    intakeMotor.setPower(0);
-                }
+                shooterMotor1.setPower(shootPow);
+                shooterMotor2.setPower(shootPow);
                 followOnce(paths.toGoal2(), AutoState.SHOOT2);
                 break;
 
-            case SHOOT2: //                                                                        SHOOT 2
-                if (!follower.isBusy() && (elapsed() >= 500 && elapsed() <= 2675)) {
-                    intakeMotor.setPower(1);
-                    if (shootPow + 0.01 <= 1) {
+            case SHOOT2: //                                                                         SHOOT 2
+                if (elapsed() >= 50) Gate.setPosition(0); else Gate.setPosition(.65);
+                if (!follower.isBusy() && (elapsed() >= 850 && elapsed() <= 2250)) {
+                    intakeMotor.setPower(0.75);
+                    if (shootPow + 0.005 <= 0.9) {
                         shootAddPow += 0.01;
+                    } else {
+                        shootPow = 0.9;
                     }
                 } else if (elapsed() >= 2250) {
                     stopMotors();
@@ -232,14 +229,14 @@ public class RedALLOffGoalPP extends OpMode {
                 }
                 break;
 
-            case SET_TO_RELOAD_2: //                                                                        TO RELOAD 2
+            case SET_TO_RELOAD_2: //                                                                TO RELOAD 2
+                Gate.setPosition(.65);
                 stopEarly = 1;
                 followOnce(paths.setToReload2(), AutoState.RELOAD_2);
                 break;
 
-            case RELOAD_2: //                                                                        RELOAD 2
-
-                needX = 130;
+            case RELOAD_2: //                                                                       RELOAD 2
+                Gate.setPosition(.65);
 
                 stopEarly = 2;
 
@@ -247,45 +244,34 @@ public class RedALLOffGoalPP extends OpMode {
 
                 intakeMotor.setPower(0.9);
 
-                if (follower.getPathCompletion() >= 0.35) {
-                    shooterMotor1.setPower(-0.85);
-                    shooterMotor2.setPower(-0.85);
-                }
                 if (follower.getPathCompletion() >= 0.95) {
                     stopMotors();
                     transitionTo(AutoState.BackUp);
                 }
                 break;
 
-            case BackUp: //                                                                        BACK UP
+            case BackUp: //                                                                         BACK UP
+                Gate.setPosition(.65);
                 stopEarly = 0;
-                if (elapsed() < 250) {
-                    shooterMotor1.setPower(-0.75);
-                    shooterMotor2.setPower(-0.75);
-                    intakeMotor.setPower(-0.125);
-                } else {
-                    intakeMotor.setPower(0);
-                }
                 followOnce(paths.backUp(), AutoState.TO_GOAL_3);
                 break;
 
-            case TO_GOAL_3: //                                                                        TO GOAL 3
+            case TO_GOAL_3: //                                                                      TO GOAL 3
+                Gate.setPosition(.65);
                 stopEarly = 0;
-                if (elapsed() < 150) {
-                    shooterMotor1.setPower(-0.75);
-                    shooterMotor2.setPower(-0.75);
-                } else {
-                    shooterMotor1.setPower(shootPow);
-                    shooterMotor2.setPower(shootPow);
-                }
+                shooterMotor1.setPower(shootPow);
+                shooterMotor2.setPower(shootPow);
                 followOnce(paths.toGoal3(), AutoState.SHOOT3);
                 break;
 
-            case SHOOT3: //                                                                        SHOOT 3
-                if (!follower.isBusy() && (elapsed() >= 500 && elapsed() <= 2675)) {
-                    intakeMotor.setPower(1);
-                    if (shootPow + 0.01 <= 1) {
+            case SHOOT3: //                                                                         SHOOT 3
+                if (elapsed() >= 100) Gate.setPosition(0); else Gate.setPosition(.65);
+                if (!follower.isBusy() && (elapsed() >= 850 && elapsed() <= 2250)) {
+                    intakeMotor.setPower(0.75);
+                    if (shootPow + 0.005 <= 0.9) {
                         shootAddPow += 0.01;
+                    } else {
+                        shootPow = 0.9;
                     }
                 } else if (elapsed() >= 2250) {
                     stopMotors();
@@ -293,14 +279,14 @@ public class RedALLOffGoalPP extends OpMode {
                 }
                 break;
 
-            case SET_TO_RELOAD_3: //                                                                        TO RELOAD 3
+            case SET_TO_RELOAD_3: //                                                                TO RELOAD 3
+                Gate.setPosition(.65);
                 stopEarly = 1;
                 followOnce(paths.setToReload3(), AutoState.RELOAD_3);
                 break;
 
-            case RELOAD_3: //                                                                        RELOAD 3
-
-                needX = 130;
+            case RELOAD_3: //                                                                       RELOAD 3
+                Gate.setPosition(.65);
 
                 stopEarly = 2;
 
@@ -308,37 +294,28 @@ public class RedALLOffGoalPP extends OpMode {
 
                 intakeMotor.setPower(0.9);
 
-                if (follower.getPathCompletion() >= 0.35) {
-                    shooterMotor1.setPower(-0.85);
-                    shooterMotor2.setPower(-0.85);
-                }
                 if (follower.getPathCompletion() >= 0.95) {
                     stopMotors();
                     transitionTo(AutoState.TO_GOAL_4);
                 }
                 break;
 
-            case TO_GOAL_4: //                                                                        TO GOAL 4
+            case TO_GOAL_4: //                                                                      TO GOAL 4
+                Gate.setPosition(.65);
                 stopEarly = 0;
-                if (elapsed() < 250) {
-                    shooterMotor1.setPower(-0.75);
-                    shooterMotor2.setPower(-0.75);
-                    intakeMotor.setPower(-0.125);
-                } else {
-                    shooterMotor1.setPower(shootPow);
-                    shooterMotor2.setPower(shootPow);
-                    intakeMotor.setPower(0);
-                }
+                shooterMotor1.setPower(shootPow);
+                shooterMotor2.setPower(shootPow);
                 followOnce(paths.toGoal4(), AutoState.SHOOT4);
                 break;
 
-            case SHOOT4: //                                                                        SHOOT 4
-                if (!follower.isBusy() && (elapsed() >= 500 && elapsed() <= 2675)) {
-                    intakeMotor.setPower(1);
-                    if (shootPow + 0.015 <= 1) {
+            case SHOOT4: //                                                                         SHOOT 4
+                if (elapsed() >= 50) Gate.setPosition(0); else Gate.setPosition(.65);
+                if (!follower.isBusy() && (elapsed() >= 850 && elapsed() <= 2250)) {
+                    intakeMotor.setPower(0.75);
+                    if (shootPow + 0.005 <= 0.9) {
                         shootAddPow += 0.015;
                     } else {
-                        shootPow = 1;
+                        shootPow = 0.95;
                     }
                 } else if (elapsed() >= 2250) {
                     stopMotors();
@@ -347,20 +324,23 @@ public class RedALLOffGoalPP extends OpMode {
                 }
                 break;
 
-            case Off: //                                                                        OFF
+            case Off: //                                                                            OFF
+                Gate.setPosition(.65);
                 stopEarly = 3;
+                shootPow = 0.25;
                 followOnce(paths.off(), AutoState.DONE);
                 break;
 
-            case DONE: //                                                                        DONE
+            case DONE: //                                                                           DONE
+                Gate.setPosition(.65);
+                stop();
                 break;
         }
     }
 
     // ================= HELPERS =================
     private void stopMotors() {
-        shooterMotor1.setPower(0);
-        shooterMotor2.setPower(0);
+        shootPow = 0.8;
         intakeMotor.setPower(0);
     }
 
@@ -381,15 +361,15 @@ public class RedALLOffGoalPP extends OpMode {
             pathStarted = true;
         }
 
-        double threshold =
-                stopEarly == 0 ? 1.5 :
-                        stopEarly == 1 ? 0.75 :
-                                stopEarly == 2 ? 0.25 :
-                                    2.5;
+        double inchesOff =
+                stopEarly == 0 ? 2 :
+                        stopEarly == 1 ? 1 :
+                                stopEarly == 2 ? 0.5 :
+                                        3;
 
         if (follower.isRobotStuck()) {
             transitionTo(next);
-        } else if (follower.isBusy() && follower.getDistanceRemaining() <= threshold) {
+        } else if (follower.isBusy() && follower.getDistanceRemaining() <= inchesOff) {
             transitionTo(next);
         } else if (!follower.isBusy()) {
             transitionTo(next);
@@ -439,21 +419,21 @@ public class RedALLOffGoalPP extends OpMode {
 
         public PathChain setToReload2() {
             return follower.pathBuilder()
-                    .addPath(new BezierLine(pathStartPose(), new Pose(89, 75.5)))
+                    .addPath(new BezierLine(pathStartPose(), new Pose(89, 75)))
                     .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(0))
                     .build();
         }
 
         public PathChain reload2() {
             return follower.pathBuilder()
-                    .addPath(new BezierLine(pathStartPose(), new Pose(130, 75.5)))
+                    .addPath(new BezierLine(pathStartPose(), new Pose(130, 75)))
                     .setTangentHeadingInterpolation()
                     .build();
         }
 
         public PathChain backUp() {
             return follower.pathBuilder()
-                    .addPath(new BezierLine(pathStartPose(), new Pose(89, 75.5)))
+                    .addPath(new BezierLine(pathStartPose(), new Pose(89, 75)))
                     .setConstantHeadingInterpolation(pathStartPose().getHeading())
                     .build();
         }

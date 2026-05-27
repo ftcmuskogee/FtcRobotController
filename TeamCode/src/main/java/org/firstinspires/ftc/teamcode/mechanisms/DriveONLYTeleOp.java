@@ -5,33 +5,35 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name = "Little Jimmy - Teleop", group = "PedroPascal")
+@TeleOp(name = "Mezzo Forte V3", group = "PedroPascal")
 public class DriveONLYTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
         // Make sure your ID's match your configuration
+        /*
         DcMotor frontLeftMotor = hardwareMap.dcMotor.get("LF");
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("LB");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("RF");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("RB");
-        CRServo axonCR = hardwareMap.get(CRServo.class, "axonCR");
+        */
+        CRServo axonCR = hardwareMap.get(CRServo.class, "Hood");
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
         // reverse the left side instead.
         // See the note about this earlier on this page.
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        /*frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);*/
         axonCR.setDirection(CRServo.Direction.FORWARD);
 
-        // If no driver input, the robot won't move
+        /*// If no driver input, the robot won't move
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
 
 
         waitForStart();
@@ -46,8 +48,14 @@ public class DriveONLYTeleOp extends LinearOpMode {
             double forward = gamepad1.right_trigger * 2;
             double reverse = gamepad1.left_trigger * 2;
 
+            double power;
             // Combine into one power value
-            double power = forward - reverse;
+            /*if (!gamepad1.a) {
+                power = forward - reverse;
+            } else {
+                power = 0.5;
+            }*/
+            if (gamepad1.a) {power = 1;} else {power = forward - reverse;}
 
             axonCR.setPower(power);
 
@@ -60,10 +68,10 @@ public class DriveONLYTeleOp extends LinearOpMode {
             double frontRightPower = (y - x - rx) / denominator;
             double backRightPower = (y + x - rx) / denominator;
 
-            frontLeftMotor.setPower(frontLeftPower);
+            /*frontLeftMotor.setPower(frontLeftPower);
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
-            backRightMotor.setPower(backRightPower);
+            backRightMotor.setPower(backRightPower);*/
 
             telemetry.addData("CRServo Power", power);
             telemetry.addData("FL Power", frontLeftPower);
