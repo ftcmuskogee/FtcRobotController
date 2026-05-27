@@ -9,16 +9,20 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp
 public class ServoTest extends LinearOpMode{
-    public boolean servo_ing = false;
+    public boolean Aservo_ing = false;
+    public boolean Xservo_ing = false;
     public double wait = 0.8;
     public double increment = 0.001;
     public double P = 1;
+    public boolean forward = true;
 
     @Override
     public void runOpMode() {
 
-        // CRServo BallKicker = hardwareMap.get(CRServo.class, "BKr"); // wait(0.601)!!!!!!!
-        CRServo hood = hardwareMap.get(CRServo.class, "Hood"); // wait(0.800)!!!!!!!
+        CRServo hood = hardwareMap.get(CRServo.class, "Hood"); // wait(0.800)!!!!!!! (for one rotation)
+        // Servo Gate = hardwareMap.get(Servo.class, "Gate");
+
+        //Gate.setPosition(0);
 
         waitForStart();
 
@@ -35,27 +39,44 @@ public class ServoTest extends LinearOpMode{
 
             telemetry.addData("Inc", increment);
 
-            if (gamepad1.y && gamepad1.x) wait = 0.8;
+            if (gamepad1.y && gamepad1.x) wait = 0.8; //                                             Hold (Y-TRIANGLE) and (X-SQUARE) to reset wait
 
-            if (gamepad1.yWasPressed() && wait + increment <= 1) wait += increment; //             Press (Y) to increase wait
-            if (gamepad1.bWasPressed() && wait - increment > -1) wait -= increment; //                Press (B) to decrease wait
+            if (gamepad1.yWasPressed() && wait + increment <= 1) wait += increment; //               Press (Y-TRIANGLE) to increase wait
+            if (gamepad1.bWasPressed() && wait - increment > 0) wait -= increment; //               Press (B-CIRCLE) to decrease wait
 
-            if (gamepad1.xWasPressed() && P == 1) P = -1; else if (gamepad1.xWasPressed()) P = 1; // Press (X) to swap servo direction
-
-            // Ball Kicker
-            if (gamepad1.a && !servo_ing) { //                                                       Press (A) to move the servo for (wait) seconds
+            // Ball Kicker REVERSE
+            if (gamepad1.x && !Xservo_ing) { //                                                       Press (X-SQUARE) to move the servo for (wait) seconds
                 resetRuntime();
-                servo_ing = true;
-            } else if (servo_ing && getRuntime() <= wait) {
-                hood.setPower(P);
+                Xservo_ing = true;
+            } else if (Xservo_ing && getRuntime() <= wait) {
+                hood.setPower(-P);
                 telemetry.addData("Servo - ", "Spinning...");
-            } else if (servo_ing) {
+            } else if (Xservo_ing) {
                 hood.setPower(0);
                 telemetry.addData("Servo - ","Stopped");
-                servo_ing = false;
+                Xservo_ing = false;
+            }
+
+            // Ball Kicker FORWARD
+            if (gamepad1.a && !Aservo_ing) { //                                                       Press (A-CROSS) to move the servo for (wait) seconds
+                resetRuntime();
+                Aservo_ing = true;
+            } else if (Aservo_ing && getRuntime() <= wait) {
+                hood.setPower(P);
+                telemetry.addData("Servo - ", "Spinning...");
+            } else if (Aservo_ing) {
+                hood.setPower(0);
+                telemetry.addData("Servo - ","Stopped");
+                Aservo_ing = false;
             }
 
             telemetry.addData("Set WAIT for", wait);
+
+            /*if (gamepad1.a) {
+                Gate.setPosition(1);
+            } else if (gamepad1.b) {
+                Gate.setPosition(0);
+            }*/
         }
     }
 }

@@ -37,12 +37,12 @@ public class aprilTagWebcam {
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
         builder.setCamera(hwMap.get(WebcamName.class, "Webcam 1"));
-        builder.setCameraResolution(new Size(752, 416));
+        builder.setCameraResolution(new Size(640, 480));
         builder.addProcessor(aprilTagProcessor);
 
         visionPortal = builder.build();
         visionPortal.setProcessorEnabled(aprilTagProcessor, true);
-        visionPortal.resumeStreaming();
+
 
     }
 
@@ -50,7 +50,6 @@ public class aprilTagWebcam {
         if (aprilTagProcessor == null) return;
 
         List<AprilTagDetection> detections = aprilTagProcessor.getDetections();
-
         detectedTags.clear();
 
         if (detections != null) {
