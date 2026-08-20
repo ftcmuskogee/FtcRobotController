@@ -9,11 +9,14 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "Back RED Main", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
+@Autonomous(name = "Back RED Only Preload", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
 @Configurable
 public class RedBACKPP extends OpMode {
 
@@ -25,10 +28,13 @@ public class RedBACKPP extends OpMode {
     private Paths paths;
 
     // ================= HARDWARE =================
-    private DcMotor shooterMotor1;
-    private DcMotor shooterMotor2;
+    private DcMotorEx shooterMotor1;
+    private DcMotorEx shooterMotor2;
+    double farP = 13;
+    double farF = 15;
+    double farV = 2041.8773;
     private DcMotor intakeMotor;
-    private Servo Gate;
+    private CRServo Gate;
     private Servo Hood;
 
     // ================= STATE =================
@@ -37,16 +43,16 @@ public class RedBACKPP extends OpMode {
     private long stateStartTime;
     private boolean pathStarted = false;
     public int stopEarly = 0;
-    public double shootPow = 1;
 
     private enum AutoState {
+        toShoot,
         SHOOT,
         Off,
         DONE
     }
 
     // ================= FLEXIBLE START POSE =================
-    public Pose startPose = new Pose(81, 8, Math.toRadians(40));
+    public Pose startPose = new Pose(89.25, 9, Math.toRadians(90));
 
     // ================= INIT =================
     @Override
@@ -54,18 +60,24 @@ public class RedBACKPP extends OpMode {
 
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-        shooterMotor1 = hardwareMap.get(DcMotor.class, "S1");
-        shooterMotor2 = hardwareMap.get(DcMotor.class, "S2");
+        shooterMotor1 = hardwareMap.get(DcMotorEx.class, "S1");
+        shooterMotor2 = hardwareMap.get(DcMotorEx.class, "S2");
         intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
-        Gate = hardwareMap.get(Servo.class,"Gate");
+        Gate = hardwareMap.get(CRServo.class,"Gate");
         Hood = hardwareMap.get(Servo.class, "Hood");
 
         shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shooterMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        PIDFCoefficients pidf = new PIDFCoefficients(farP, 0, 0, farF);
+        shooterMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        shooterMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
 
         follower = Constants.createFollower(hardwareMap);
 
@@ -73,7 +85,6 @@ public class RedBACKPP extends OpMode {
 
         paths = new Paths(follower);
 
-        Gate.setPosition(1);
         Hood.setPosition(1);
 
         panelsTelemetry.debug("Status", "Initialized");
@@ -82,7 +93,7 @@ public class RedBACKPP extends OpMode {
 
     // ================= START =================
     public void start() {
-        state = AutoState.SHOOT;
+        state = AutoState.toShoot;
         lastState = null;
         stateStartTime = System.currentTimeMillis();
     }
@@ -99,8 +110,6 @@ public class RedBACKPP extends OpMode {
         panelsTelemetry.addData("X - ", Math.round(follower.getPose().getX()));
         panelsTelemetry.addData("Y - ", Math.round(follower.getPose().getY()));
         panelsTelemetry.addData("Heading - ", Math.round(Math.toDegrees(follower.getPose().getHeading())));
-        panelsTelemetry.addData("Shooter Power - ", Math.round(shootPow));
-        panelsTelemetry.addData("Gate Status - ", (Gate.getPosition() == 0 ? "OPEN" : "CLOSED"));
         panelsTelemetry.update(telemetry);
     }
 
@@ -121,28 +130,36 @@ public class RedBACKPP extends OpMode {
     private void updateAuto() {
 
         switch (state) {
+            case toShoot: //                                                                        Turn To Goal
+                Gate.setPower(0);
+                stopEarly = 3;
+                shooterMotor1.setVelocity(farV);
+                shooterMotor2.setVelocity(farV);
+                followOnce(paths.look2Goal(), AutoState.SHOOT);
+                break;
 
-            case SHOOT: //                                                                         SHOOT 1
-                if (elapsed() >= 2000) Gate.setPosition(0); else Gate.setPosition(.65);
-                shooterMotor1.setPower(shootPow);
-                shooterMotor2.setPower(shootPow);
-                if (!follower.isBusy() && (elapsed() >= 2850 && elapsed() <= 4250)) {
-                    intakeMotor.setPower(0.75);
-                } else if (elapsed() > 4250) {
+            case SHOOT: //                                                                          SHOOT 1
+                if (elapsed() >= 500 && elapsed() <= 1000) Gate.setPower(-1); else Gate.setPower(0);
+                shooterMotor1.setVelocity(farV);
+                shooterMotor2.setVelocity(farV);
+                if (!follower.isBusy() && (elapsed() >= 1000 && elapsed() <= 2250)) {
+                    intakeMotor.setPower(-1);
+                } else if (elapsed() > 2250) {
                     stopMotors();
                     transitionTo(AutoState.Off);
                 }
                 break;
 
             case Off: //                                                                            OFF
-                Gate.setPosition(.65);
+                Gate.setPower(0);
                 stopEarly = 3;
-                shootPow = 0.25;
+                shooterMotor1.setVelocity(500);
+                shooterMotor2.setVelocity(500);
                 followOnce(paths.off(), AutoState.DONE);
                 break;
 
             case DONE: //                                                                           DONE
-                Gate.setPosition(.65);
+                Gate.setPower(0);
                 stop();
                 break;
         }
@@ -150,7 +167,6 @@ public class RedBACKPP extends OpMode {
 
     // ================= HELPERS =================
     private void stopMotors() {
-        shootPow = 0.8;
         intakeMotor.setPower(0);
     }
 
@@ -198,9 +214,16 @@ public class RedBACKPP extends OpMode {
             return follower.getPose();
         }
 
+        public PathChain look2Goal() {
+            return follower.pathBuilder()
+                    .addPath(new BezierLine(pathStartPose(), new Pose(90,17.5)))
+                    .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(70.5))
+                    .build();
+        }
+
         public PathChain off() {
             return follower.pathBuilder()
-                    .addPath(new BezierLine(pathStartPose(), new Pose(95, 10)))
+                    .addPath(new BezierLine(pathStartPose(), new Pose(109, 9)))
                     .setConstantHeadingInterpolation(pathStartPose().getHeading())
                     .build();
         }

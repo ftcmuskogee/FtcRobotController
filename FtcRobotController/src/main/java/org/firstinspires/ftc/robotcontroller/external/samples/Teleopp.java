@@ -66,7 +66,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Disabled
 @TeleOp(name="Teleopp", group=" Driving + Shooting OpMode")
-// @Disabled
 public class Teleopp extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.

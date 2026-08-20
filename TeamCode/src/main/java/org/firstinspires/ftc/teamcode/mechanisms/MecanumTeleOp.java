@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
@@ -15,6 +18,18 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @TeleOp
 public class MecanumTeleOp extends LinearOpMode {
+
+    boolean init = false;
+    double farP = 13;
+    double farF = 15;
+    double farV = 2041.8773;
+    double closeP = 73;
+    double closeF = 14;
+    double closeV = 1500;
+    double curTargetV = closeV;
+    double hoodPos = 0;
+    double gateStart = System.currentTimeMillis();
+    double gateElapsed() { return System.currentTimeMillis() - gateStart; }
 
     // PID
     double kP = 0.03;
@@ -36,12 +51,12 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("FR");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("BR");
 
-        DcMotor shooterMotor1 = hardwareMap.get(DcMotor.class, "S1");
-        DcMotor shooterMotor2 = hardwareMap.get(DcMotor.class, "S2");
+        DcMotorEx shooterMotor1 = hardwareMap.get(DcMotorEx.class, "S1");
+        DcMotorEx shooterMotor2 = hardwareMap.get(DcMotorEx.class, "S2");
         DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
 
-        Servo shootServo = hardwareMap.get(Servo.class, "SS");
-        Servo hoodServo = hardwareMap.get(Servo.class, "HOOD");
+        CRServo gate = hardwareMap.get(CRServo.class, "Gate");
+        Servo hood = hardwareMap.get(Servo.class, "Hood");
 
         // Directions
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -57,16 +72,14 @@ public class MecanumTeleOp extends LinearOpMode {
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        shootServo.scaleRange(0.15, 0.275);
-        hoodServo.scaleRange(0.09, 0.21);
+        shooterMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        shootServo.setPosition(0.9);
-        hoodServo.setPosition(0.20);
+        PIDFCoefficients pidf = new PIDFCoefficients(closeP, 0, 0, closeF);
+        shooterMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        shooterMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
 
         // ---------------- APRILTAG (LOW POWER) ----------------
         AprilTagProcessor aprilTag = new AprilTagProcessor.Builder()
@@ -95,10 +108,15 @@ public class MecanumTeleOp extends LinearOpMode {
 
         // ---------------- MAIN LOOP ----------------
         while (opModeIsActive()) {
+            if (!init) {
+                hoodPos = 0;
+                hood.setPosition(0);
+                init = true;
+            }
             // -------- Vision Toggle --------
             AprilTagDetection targetTag = null;
 
-            if (gamepad1.right_bumper) {
+            if (gamepad1.right_bumper || gamepad2.right_trigger >= 0.05) {
                 for (AprilTagDetection tag : aprilTag.getDetections()) {
                     if (tag.id == 20 || tag.id == 24) {
                         targetTag = tag;
@@ -133,8 +151,36 @@ public class MecanumTeleOp extends LinearOpMode {
 
                 telemetry.addData("Snap", "ACTIVE");
                 telemetry.addData("Tag", targetTag.id);
+            } else {
+                telemetry.addData("Snap", "NO TAG");
+                telemetry.addData("Tag", "---");
             }
 
+            /*if (hoodPos + 0.01 <= 1 && gamepad2.right_stick_y > 0.05) {
+                hoodPos += 0.01;
+                hood.setPosition(hoodPos);
+            } else if (hoodPos - 0.01 >= 0 && gamepad2.right_stick_y < -0.05) {
+                hoodPos -= 0.01;
+                hood.setPosition(hoodPos);
+            }*/
+
+            if (gamepad2.right_trigger >= 0.05 && targetTag != null) {
+                double dist = targetTag.ftcPose.range;
+                if (dist >= 90) {
+                    hoodPos = 1;
+                    hood.setPosition(hoodPos);
+                }
+
+                telemetry.addData("Distance to Goal", Math.round(dist));
+
+            } else if (gamepad2.right_trigger >= 0.05 && targetTag == null) {
+                hoodPos = 0;
+                hood.setPosition(hoodPos);
+                telemetry.addData("Distance to Goal", "VOID");
+            } else {
+                hoodPos = 0;
+                telemetry.addData("Distance to Goal", "VOID");
+            }
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double fl = (y + x + rx) / denominator;
             double bl = (y - x + rx) / denominator;
@@ -143,37 +189,41 @@ public class MecanumTeleOp extends LinearOpMode {
 
             double driveMult = 1;
             if (gamepad1.left_trigger > 0.05) driveMult = 0.75;
-            if (gamepad1.right_trigger > 0.05) driveMult = 1.75;
+            if (gamepad1.right_trigger > 0.05) driveMult = 1.5;
 
             frontLeftMotor.setPower(fl * driveMult);
             backLeftMotor.setPower(bl * driveMult);
             frontRightMotor.setPower(fr * driveMult);
             backRightMotor.setPower(br * driveMult);
 
-            // -------- Shooter --------
-            if (gamepad2.right_trigger > 0.05) {
-                shooterMotor1.setPower(1);
-                shooterMotor2.setPower(1);
-            } else if (gamepad2.left_trigger > 0.05) {
-                shooterMotor1.setPower(-1);
-                shooterMotor2.setPower(-1);
+            if (gamepad2.left_bumper) {
+                gate.setPower(.25);
+            } else if (gamepad2.left_trigger > .05) {
+                gate.setPower(-.25);
             } else {
-                shooterMotor1.setPower(0);
-                shooterMotor2.setPower(0);
+                gate.setPower(0);
             }
 
-            // Shoot servo
-            if (gamepad2.a) shootServo.setPosition(0);
-            if (gamepad2.b) shootServo.setPosition(0.9);
-
             // Intake
-            if (gamepad2.dpad_down) intakeMotor.setPower(1);
-            else if (gamepad2.dpad_up) intakeMotor.setPower(-1);
+            if (gamepad2.dpad_down) intakeMotor.setPower(-1);
+            else if (gamepad2.dpad_up) intakeMotor.setPower(1);
             else intakeMotor.setPower(0);
 
-            // Hood
-            if (gamepad2.x) hoodServo.setPosition(1);
-            if (gamepad2.y) hoodServo.setPosition(0);
+            telemetry.addData("Hood Position", Math.round(hoodPos));
+
+            if (hoodPos == 1) {
+                pidf = new PIDFCoefficients(farP, 0, 0, farF);
+                curTargetV = farV;
+            } else {
+                pidf = new PIDFCoefficients(closeP, 0, 0, closeF);
+                curTargetV = closeV;
+            }
+            shooterMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+            shooterMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+
+            hood.setPosition(hoodPos);
+            shooterMotor1.setVelocity(curTargetV);
+            shooterMotor2.setVelocity(curTargetV);
 
             telemetry.update();
         }

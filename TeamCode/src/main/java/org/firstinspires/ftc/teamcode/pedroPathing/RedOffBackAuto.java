@@ -10,197 +10,288 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name = "Pedro Pathing - Back Red Autonomous", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
+@Autonomous(name = "Back Red With Reload", group = "PP Autonomous", preselectTeleOp = "MecanumTeleOp")
 @Configurable
-@Disabled
+// @Disabled
 public class RedOffBackAuto extends OpMode {
 
+    // ================= TELEMETRY =================
     private TelemetryManager panelsTelemetry;
-    public Follower follower;
 
-    private int pathState = 0;
+    // ================= PEDRO =================
+    private Follower follower;
     private Paths paths;
 
-    private long stateStartTime;
+    // ================= HARDWARE =================
+    private DcMotorEx shooterMotor1;
+    private DcMotorEx shooterMotor2;
+    double farP = 13;
+    double farF = 15;
+    double farV = 2041.8773;
+    private DcMotor intakeMotor;
+    private CRServo Gate;
+    private Servo Hood;
 
+    // ================= STATE =================
+    private AutoState state;
+    private AutoState lastState;
+    private long stateStartTime;
+    private boolean pathStarted = false;
+    public int stopEarly = 0;
+
+    private enum AutoState {
+        toShoot1,
+        Shoot1,
+        ToReload,
+        Reload,
+        ToShoot2,
+        Shoot2,
+        Off,
+        DONE
+    }
+    public Pose startPose = new Pose(89.25, 9, Math.toRadians(90));
+
+    // ================= INIT =================
     @Override
     public void init() {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+        follower = Constants.createFollower(hardwareMap);
+
+        shooterMotor1 = hardwareMap.get(DcMotorEx.class, "S1");
+        shooterMotor2 = hardwareMap.get(DcMotorEx.class, "S2");
+        intakeMotor = hardwareMap.get(DcMotor.class, "NTK");
+        Gate = hardwareMap.get(CRServo.class,"Gate");
+        Hood = hardwareMap.get(Servo.class, "Hood");
+
+        shooterMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shooterMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        PIDFCoefficients pidf = new PIDFCoefficients(farP, 0, 0, farF);
+        shooterMotor1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
+        shooterMotor2.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(88, 8, Math.toRadians(90)));
+
+        follower.setStartingPose(startPose);
 
         paths = new Paths(follower);
+
+        Hood.setPosition(1);
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
     }
 
-    @Override
-    public void start() {
-        pathState = 0;
-        stateStartTime = System.currentTimeMillis();
-    }
+        // ================= START =================
+        public void start() {
+            state = AutoState.toShoot1;
+            lastState = null;
+            stateStartTime = System.currentTimeMillis();
+        }
 
-    @Override
-    public void loop() {
-        follower.update();
-        autonomousPathUpdate();
+        // ================= LOOP =================
+        @Override
+        public void loop() {
 
-        panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
-        panelsTelemetry.update(telemetry);
-    }
+            follower.update();
+            updateStateTimer();
+            updateAuto();
 
-    // ==================================================
-    // ================= STATE MACHINE ==================
-    // ==================================================
+            panelsTelemetry.addData("State - ", state);
+            panelsTelemetry.addData("X - ", Math.round(follower.getPose().getX()));
+            panelsTelemetry.addData("Y - ", Math.round(follower.getPose().getY()));
+            panelsTelemetry.addData("Heading - ", Math.round(Math.toDegrees(follower.getPose().getHeading())));
+            panelsTelemetry.update(telemetry);
+        }
 
-    public void autonomousPathUpdate() {
+        // ================= STATE TIMER =================
+        private void updateStateTimer() {
+            if (state != lastState) {
+                stateStartTime = System.currentTimeMillis();
+                lastState = state;
+                pathStarted = false;
+            }
+        }
 
-        switch (pathState) {
+        private long elapsed() {
+            return System.currentTimeMillis() - stateStartTime;
+        }
 
-            case 0:
-                // Go to launch line
-                follower.followPath(paths.ToLaunchLineTurntoGoal);
-                pathState++;
-                break;
+        // ================= AUTO =================
+        private void updateAuto() {
 
-            case 1:
-                if (!follower.isBusy()) {
-                    stateStartTime = System.currentTimeMillis();
-                    pathState++;
-                }
-                break;
+            switch (state) {
 
-            case 2:
-                // Simulated shooting wait
-                if (System.currentTimeMillis() - stateStartTime > 1000) {
-                    follower.followPath(paths.SettoReload);
-                    pathState++;
-                }
-                break;
+                case toShoot1:
+                    Gate.setPower(0);
+                    shooterMotor1.setVelocity(farV);
+                    shooterMotor2.setVelocity(farV);
+                    followOnce(paths.toShoot1(), AutoState.Shoot1);
+                    break;
 
-            case 3:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.ReloadAddreloadingcodeforintake);
-                    pathState++;
-                }
-                break;
+                case Shoot1: //                                                                         SHOOT 1
+                    if (elapsed() >= 2000 && elapsed() <= 2500) Gate.setPower(-1); else Gate.setPower(0);
+                    shooterMotor1.setVelocity(farV);
+                    shooterMotor2.setVelocity(farV);
+                    if (!follower.isBusy() && (elapsed() >= 2850 && elapsed() <= 4250)) {
+                        intakeMotor.setPower(-1);
+                    } else if (elapsed() > 4250) {
+                        stopMotors();
+                        transitionTo(AutoState.ToReload);
+                    }
+                    break;
 
-            case 4:
-                if (!follower.isBusy()) {
-                    follower.followPath(paths.BacktoLaunchLine);
-                    pathState++;
-                }
-                break;
+                case ToReload:
+                    startFollow(paths.TO_RELOAD());
+                    if (elapsed() <= 500) {
+                        Gate.setPower(1);
+                    } else {
+                        Gate.setPower(0);
+                    }
+                    stopEarly = 1;
+                    if (elapsed() > 500 && follower.getPathCompletion() >= 0.975) transitionTo(AutoState.Reload);
+                    break;
 
-            case 5:
-                if (!follower.isBusy()) {
-                    stateStartTime = System.currentTimeMillis();
-                    pathState++;
-                }
-                break;
+                case Reload:
+                    Gate.setPower(0);
+                    stopEarly = 2;
+                    startFollow(paths.RELOAD());
+                    intakeMotor.setPower(-0.9);
+                    if (follower.getPathCompletion() >= 0.95) {
+                        stopMotors();
+                        transitionTo(AutoState.ToShoot2);
+                    }
+                    break;
 
-            case 6:
-                // Second shooting wait
-                if (System.currentTimeMillis() - stateStartTime > 1000) {
-                    follower.followPath(paths.LeaveLaunchLine);
-                    pathState++;
-                }
-                break;
+                case ToShoot2:
+                    Gate.setPower(0);
+                    farV = 1;
+                    followOnce(paths.TO_SHOOT(), AutoState.Shoot2);
+                    break;
 
-            case 7:
-                // Done
-                break;
+                case Shoot2: //                                                                         SHOOT 1
+                    if (elapsed() >= 500 && elapsed() <= 1000) Gate.setPower(-1); else Gate.setPower(0);
+                    shooterMotor1.setVelocity(farV);
+                    shooterMotor2.setVelocity(farV);
+                    if (!follower.isBusy() && (elapsed() >= 1250 && elapsed() <= 4250)) {
+                        intakeMotor.setPower(-1);
+                    } else if (elapsed() > 4250) {
+                        stopMotors();
+                        transitionTo(AutoState.Off);
+                    }
+                    break;
+
+                case Off: //                                                                            OFF
+                    Gate.setPower(0);
+                    stopEarly = 3;
+                    farV = 0.25;
+                    shooterMotor1.setVelocity(farV);
+                    shooterMotor2.setVelocity(farV);
+                    followOnce(paths.off(), AutoState.DONE);
+                    break;
+
+                case DONE: //                                                                           DONE
+                    Gate.setPower(0);
+                    stop();
+                    break;
+            }
+        }
+
+        // ================= HELPERS =================
+        private void stopMotors() {
+            intakeMotor.setPower(0);
+        }
+
+        private void transitionTo(AutoState next) {
+            state = next;
+        }
+
+        private void startFollow(PathChain path) {
+            if (!pathStarted) {
+                follower.followPath(path);
+                pathStarted = true;
+            }
+        }
+        private void followOnce(PathChain path, AutoState next) {
+            if (!pathStarted) {
+                follower.followPath(path);
+                pathStarted = true;
+            }
+
+            double inchesOff =
+                    stopEarly == 0 ? 2 :
+                            stopEarly == 1 ? 1 :
+                                    stopEarly == 2 ? 0.5 :
+                                            3;
+
+            if (follower.isRobotStuck()) {
+                transitionTo(next);
+            } else if (follower.isBusy() && follower.getDistanceRemaining() <= inchesOff) {
+                transitionTo(next);
+            } else if (!follower.isBusy()) {
+                transitionTo(next);
+            }
+        }
+
+        // ================= PATHS =================
+        public static class Paths {
+
+            private final Follower follower;
+
+            public Paths(Follower follower) {
+                this.follower = follower;
+            }
+
+            private Pose pathStartPose() {
+                return follower.getPose();
+            }
+
+            public PathChain toShoot1() {
+                return follower.pathBuilder()
+                        .addPath(new BezierLine(pathStartPose(), new Pose(90, 17.5)))
+                        .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(70.5))
+                        .build();
+            }
+
+            public PathChain TO_RELOAD() {
+                return follower.pathBuilder()
+                        .addPath(new BezierLine(pathStartPose(), new Pose(92.5, 35)))
+                        .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(0))
+                        .build();
+            }
+
+            public PathChain RELOAD() {
+                return follower.pathBuilder()
+                        .addPath(new BezierLine(pathStartPose(), new Pose(140, 35)))
+                        .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(0))
+                        .build();
+            }
+
+            public PathChain TO_SHOOT() {
+                return follower.pathBuilder()
+                        .addPath(new BezierLine(pathStartPose(), new Pose(90, 17.5)))
+                        .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(70.5))
+                        .build();
+            }
+
+            public PathChain off() {
+                return follower.pathBuilder()
+                        .addPath(new BezierLine(pathStartPose(), new Pose(109, 9)))
+                        .setLinearHeadingInterpolation(pathStartPose().getHeading(), Math.toRadians(90))
+                        .build();
+            }
         }
     }
-
-    // ==================================================
-    // ================= PATH DEFINITIONS ===============
-    // ==================================================
-
-    public static class Paths {
-
-        public PathChain ToLaunchLineTurntoGoal;
-        public PathChain SettoReload;
-        public PathChain ReloadAddreloadingcodeforintake;
-        public PathChain BacktoLaunchLine;
-        public PathChain LeaveLaunchLine;
-
-        public Paths(Follower follower) {
-
-            ToLaunchLineTurntoGoal = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(88.000, 8.000),
-                                    new Pose(88.000, 88.000) // Supposed to be 88
-                            )
-                    )
-                    .setLinearHeadingInterpolation(
-                            Math.toRadians(90),
-                            Math.toRadians(45)
-                    )
-                    .build();
-
-            SettoReload = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(88.000, 88.000), // Supposed to be 88
-                                    new Pose(102.500, 83.750) // Supposed to be 83.75
-                            )
-                    )
-                    .setLinearHeadingInterpolation(
-                            Math.toRadians(45),
-                            Math.toRadians(0)
-                    )
-                    .build();
-
-            ReloadAddreloadingcodeforintake = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(102.500, 83.750), // Supposed to be 83.75
-                                    new Pose(120.500, 83.750) // Supposed to be 83.75
-                            )
-                    )
-                    .setLinearHeadingInterpolation(
-                            Math.toRadians(0),
-                            Math.toRadians(0)
-                    )
-                    .build();
-
-            BacktoLaunchLine = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(120.000, 83.750), // Supposed to be 83.75
-                                    new Pose(88.000, 88.000) // Supposed to be 88
-                            )
-                    )
-                    .setLinearHeadingInterpolation(
-                            Math.toRadians(0),
-                            Math.toRadians(45)
-                    )
-                    .build();
-
-            LeaveLaunchLine = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(
-                                    new Pose(88.000, 88.000), // Supposed to be 88
-                                    new Pose(125.000, 93.000) // Supposed to be 93
-                            )
-                    )
-                    .setConstantHeadingInterpolation(
-                            Math.toRadians(45)
-                    )
-                    .build();
-        }
-    }
-}
