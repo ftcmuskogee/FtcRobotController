@@ -1,0 +1,184 @@
+package org.firstinspires.ftc.teamcode.mechanisms;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+import android.util.Size;
+
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+@TeleOp
+public class TeleoppKY extends LinearOpMode {
+
+    // PID
+    double kP = 0.03;
+    double kD = 0.001;
+    double lastError = 0;
+
+    private double headingPID(double error) {
+        double derivative = error - lastError;
+        lastError = error;
+        return (kP * error) + (kD * derivative);
+    }
+
+    @Override
+    public void runOpMode() {
+
+        // ---------------- MOTORS ----------------
+        /*
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("FL");
+        DcMotor backLeftMotor = hardwareMap.dcMotor.get("BL");
+        DcMotor frontRightMotor = hardwareMap.dcMotor.get("FR");
+        DcMotor backRightMotor = hardwareMap.dcMotor.get("BR");
+*/
+        DcMotor shooterMotor1 = hardwareMap.get(DcMotor.class, "S1");
+        DcMotor shooterMotor2 = hardwareMap.get(DcMotor.class, "S2");/*
+        DcMotor intakeMotor = hardwareMap.dcMotor.get("NTK");
+
+        CRServo ballKickerServo = hardwareMap.get(CRServo.class, "BKr");*/
+        //Servo hoodServo = hardwareMap.get(Servo.class, "Hood");
+
+        // Directions
+        /*
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+*/
+        shooterMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+/*
+        // Brake behavior
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shooterMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+*/
+        //hoodServo.scaleRange(0.09, 0.21);
+
+        //hoodServo.setPosition(0.20);
+/*
+        // ---------------- APRILTAG (LOW POWER) ----------------
+        AprilTagProcessor aprilTag = new AprilTagProcessor.Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagOutline(true)
+                .build();
+
+        // lowest power
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(640, 480)) // lowest power
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+                .enableLiveView(true)
+                .addProcessor(aprilTag)
+                .build();
+
+        // Start OFF
+        visionPortal.setProcessorEnabled(aprilTag, true);
+*/
+        telemetry.addLine("Initialized");
+        telemetry.update();
+
+        waitForStart();
+        if (isStopRequested()) return;
+
+        // ---------------- MAIN LOOP ----------------
+        while (opModeIsActive()) {
+            // -------- Vision Toggle --------
+            AprilTagDetection targetTag = null;
+
+            /*if (gamepad1.right_bumper) {
+                for (AprilTagDetection tag : aprilTag.getDetections()) {
+                    if (tag.id == 20 || tag.id == 24) {
+                        targetTag = tag;
+                        break;
+                    }
+                }
+            }
+
+            // -------- Driving --------
+            double y = gamepad1.left_stick_y;
+            double x = -gamepad1.left_stick_x * 1.1;
+            double rx = -gamepad1.right_stick_x;
+
+            // Snap-to-target
+            if (gamepad1.right_bumper && targetTag != null) {
+
+                double error = targetTag.ftcPose.bearing;
+
+                if (Math.abs(error) > 0.5) {
+
+                    double output = headingPID(error);
+
+                    if (Math.abs(output) < 0.08) {
+                        output = Math.signum(output) * 0.08;
+                    }
+
+                    rx = Math.max(-0.7, Math.min(0.7, output));
+
+                } else {
+                    rx = 0;
+                }
+
+                telemetry.addData("Snap", "ACTIVE");
+                telemetry.addData("Tag", targetTag.id);
+            }
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double fl = (y + x + rx) / denominator;
+            double bl = (y - x + rx) / denominator;
+            double fr = (y - x - rx) / denominator;
+            double br = (y + x - rx) / denominator;
+
+            double driveMult = 1;
+            if (gamepad1.left_trigger > 0.05) driveMult = 0.75;
+            if (gamepad1.right_trigger > 0.05) driveMult = 1.75;
+
+            frontLeftMotor.setPower(fl * driveMult);
+            backLeftMotor.setPower(bl * driveMult);
+            frontRightMotor.setPower(fr * driveMult);
+            backRightMotor.setPower(br * driveMult);
+*/
+            // -------- Shooter --------
+            if (gamepad2.right_trigger > 0.05) {
+                shooterMotor1.setPower(gamepad2.right_trigger / 2);
+                shooterMotor2.setPower(gamepad2.right_trigger / 2);
+            } else if (gamepad2.left_trigger > 0.05) {
+                shooterMotor1.setPower(-gamepad2.right_trigger / 2);
+                shooterMotor2.setPower(-gamepad2.right_trigger / 2);
+            } else {
+                shooterMotor1.setPower(0);
+                shooterMotor2.setPower(0);
+            }
+/*
+            // Shoot servo
+            if (gamepad2.a) ballKickerServo.setPower(1);
+            else if (gamepad2.b) ballKickerServo.setPower(-0.5);
+            else ballKickerServo.setPower(0);
+
+            // Intake
+            if (gamepad2.dpad_down) intakeMotor.setPower(1);
+            else if (gamepad2.dpad_up) intakeMotor.setPower(-1);
+            else intakeMotor.setPower(0);
+*/
+            // Hood
+            //if (gamepad2.x) hoodServo.setPosition(1);
+            //if (gamepad2.y) hoodServo.setPosition(0);
+
+            telemetry.update();
+        }
+    }
+}
