@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import fi.iki.elonen.NanoHTTPD;
-
+@TeleOp(name = "CodyTeley", group = "TeleOp")
 public class CodyTeley {
     private DcMotorEx myMotor;
     private DcMotor frontLeftMotor, backLeftMotor, frontRightMotor, backRightMotor, IntakeMotor,ShooterMotor;
@@ -56,10 +56,6 @@ public class CodyTeley {
         maxPower = Math.max(maxPower, Math.abs(backLeftPower));
         maxPower = Math.max(maxPower, Math.abs(frontRightPower));
         maxPower = Math.max(maxPower, Math.abs(backRightPower));
-
-
-
-        @TeleOp(name = "Velocity Test")
         class Cody extends LinearOpMode {
             private DcMotorEx myMotor;
 

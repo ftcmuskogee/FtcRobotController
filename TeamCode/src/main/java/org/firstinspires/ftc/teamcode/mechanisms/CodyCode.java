@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
+/*package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -25,4 +25,4 @@ public class CodyCode extends OpMode {
         drive.drive(forward, strafe, rotate);
     }
 
-}
+}*/
