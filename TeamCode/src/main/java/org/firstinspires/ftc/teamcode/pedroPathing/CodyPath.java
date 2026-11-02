@@ -1,17 +1,25 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
+import static com.pedropathing.api.Paths.*;
+import com.pedropathing.api.PoseFactory;
+import com.pedropathing.math.Pose;
+import static org.opencv.imgproc.Imgproc.line;
 
+import com.pedropathing.paths.Path;
 import com.google.ar.core.Pose;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.pedropathing.util.Timer;
+
+import org.opencv.core.Point;
+
 @Autonomous
 public class CodyPath  extends OpMode {
     private Follower follower;
     private Timer pathTimer, opModeTimer;
+    private Point park;
 
 
     public enum PathState {
@@ -22,17 +30,19 @@ public class CodyPath  extends OpMode {
 
     PathState pathState;
 
-    private final Pose startPose = new Pose(57.33490566037736, 8.133490566037743, Math.toRadians());
-    private final Pose shootPose = new Pose(57.60188679245283,32.79622641509434, Math.toRadians());
+    private final Pose startPose = new Pose(57.03, 36.15, Math.toRadians()); // Note this needs adjusting when the path is decided
+    private final Pose shootPose = new Pose(57.03,36.15, Math.toRadians()); // adjust this one to
+    private final Pose endPose = new Pose(5.92,108.97, Math.toRadians()); // finish this pose when you get how you want your auto
 
-    private final Pose endPose = new Pose();
-
+    private Path park() {
+        return line(startPose, park).linear(startPose, park);
+    }
     private PathChain driveStartPosShootPos;
 
     public void buildPaths() {
         // put in coordinates for starting pose > ending pose
         driveStartPosShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, shootPose))
+                .addPath(new BezierLine(startPose,shootPose))
                 .setLinearHeadingInterpolation(startPose.getZAxis(), shootPose.getZAxis())
                 .build();
     }

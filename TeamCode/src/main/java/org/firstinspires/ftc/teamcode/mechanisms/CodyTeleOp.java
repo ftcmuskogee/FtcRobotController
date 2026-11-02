@@ -66,14 +66,14 @@
              IntakeMotor.setPower(0);
          }
          if(gamepad1.right_trigger > 0.05){
-             ShooterMotor.setPower(1);
+             ShooterMotor.setPower(0.6);
          }
          else {
              ShooterMotor.setPower(0);
          }
 
          if(gamepad1.right_bumper) {
-             ShooterMotor.setPower(-1);
+             ShooterMotor.setPower(-0.6);
          }
          else{
              ShooterMotor.setPower(0);
