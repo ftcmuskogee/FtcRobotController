@@ -48,7 +48,7 @@
          double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
          double rx = gamepad1.right_stick_x;
 
-         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 0.6); // 0.45 for non-gripy wheels, 0.6 for gripy wheels
+         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 0.4); // 0.45 for non-gripy wheels, 0.6 for gripy wheels
          double frontLeftPower = (y + x + rx) / denominator;
          double backLeftPower = (y - x + rx) / denominator;
          double frontRightPower = (y - x - rx) / denominator;
@@ -59,46 +59,46 @@
          frontRightMotor.setPower(frontRightPower);
          backRightMotor.setPower(backRightPower);
 
-         if(gamepad1.left_trigger > 0.05) {
+         if(gamepad2.left_trigger > 0.05) {
              IntakeMotor.setPower(-1);
          }
          else{
              IntakeMotor.setPower(0);
          }
-         if(gamepad1.right_trigger > 0.05){
+         if(gamepad2.right_trigger > 0.05){
              ShooterMotor.setPower(1);
          }
          else {
              ShooterMotor.setPower(0);
          }
 
-         if(gamepad1.right_bumper) {
-             ShooterMotor.setPower(-1);
+         if(gamepad2.right_bumper) {
+             ShooterMotor.setPower(-.80);
          }
          else{
              ShooterMotor.setPower(0);
          }
 
-         if(gamepad1.circle) {
+         if(gamepad2.circle) {
              IntakeMotor.setPower(1);
          }
          else{
              IntakeMotor.setPower(0);
          }
 
-         if(gamepad1.left_bumper) {
+         if(gamepad2.left_bumper) {
              IntakeMotor2.setPower(-1);}
          else{
              IntakeMotor2.setPower(0);
          }
 
-         if(gamepad1.cross) {
+         if(gamepad2.cross) {
              IntakeMotor2.setPower(1);}
          else{
              IntakeMotor2.setPower(0);
          }
 
-         if(gamepad1.square){
+         if(gamepad2.square){
              RightContinuousServo.setPower(1);
              LeftContinuousServo.setPower(-1);
          }

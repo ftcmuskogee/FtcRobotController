@@ -21,6 +21,9 @@ allprojects {
     repositories {
         mavenCentral()
         google()
+        maven {
+            url = uri("[mymaven.bylazar.com](https://mymaven.bylazar.com/releases)")
+        }
     }
 }
 
