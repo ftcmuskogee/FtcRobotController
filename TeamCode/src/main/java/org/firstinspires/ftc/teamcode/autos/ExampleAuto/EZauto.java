@@ -26,8 +26,7 @@ public class EZauto extends OpMode {
     private final Pose startPose = p.of(10, 133, 0);
     private final Pose park = p.of(10, 124, 0);
 
-    private Path park() {
-        return line(startPose, park).linear(startPose, park);
+    private Path park() {return line(startPose, park).linear(startPose, park);
     }
 
     @Override
