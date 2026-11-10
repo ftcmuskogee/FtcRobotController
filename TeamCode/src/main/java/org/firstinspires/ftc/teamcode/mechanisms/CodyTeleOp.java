@@ -34,6 +34,7 @@
 
          IntakeMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
          frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
          frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
          backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
