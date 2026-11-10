@@ -23,7 +23,7 @@ public class Constants {
             c.backRightName.set("BR");
             c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
             c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
-            c.backLeftDirection.set(DcMotorSimple.Direction.FORWARD);
+            c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
             c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
         }
         );
@@ -38,7 +38,7 @@ public class Constants {
         c.offsetUnits.set(DistanceUnit.INCH);
     }
     );
-    public static ForesightConfig foresightConfig = new ForesightConfig(
+        public static ForesightConfig foresightConfig = new ForesightConfig(
             c -> {
                 Controller primaryTranslationalForward = Controller.proportional(0.23618267712483912);
                 Controller secondaryTranslationalForward = Controller.proportional(0.08726318828026544);
@@ -64,13 +64,13 @@ public class Constants {
             }
     );
 
-    public static Follower create(HardwareMap hardwareMap) {
+  public static Follower create(HardwareMap hardwareMap) {
         return new Follower(
                 new PinpointLocalizer(hardwareMap, localizerConfig),
                 new Mecanum(hardwareMap, drivetrainConfig),
                 new Foresight(foresightConfig)
         );
-    }
-}
+    }}
+
 
 

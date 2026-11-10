@@ -34,6 +34,7 @@
 
          IntakeMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
          frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
          frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
          backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -65,28 +66,30 @@
          else{
              IntakeMotor.setPower(0);
          }
-         if(gamepad2.right_trigger > 0.05){
-             ShooterMotor.setPower(1);
-         }
-         else {
+
+         if(gamepad2.left_bumper){
              ShooterMotor.setPower(0);
          }
 
          if(gamepad2.right_bumper) {
-             ShooterMotor.setPower(-.80);
-         }
-         else{
-             ShooterMotor.setPower(0);
+             ShooterMotor.setPower(-.68);
          }
 
-         if(gamepad2.circle) {
-             IntakeMotor.setPower(1);
+         if(gamepad2.dpad_up) {
+             IntakeMotor.setPower(-1);
          }
          else{
              IntakeMotor.setPower(0);
          }
 
-         if(gamepad2.left_bumper) {
+         if(gamepad2.dpad_down) {
+             IntakeMotor.setPower(-1);
+         }
+         else{
+             IntakeMotor.setPower(0);
+         }
+
+         if(gamepad2.circle) {
              IntakeMotor2.setPower(-1);}
          else{
              IntakeMotor2.setPower(0);
