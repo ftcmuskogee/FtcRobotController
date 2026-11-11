@@ -31,15 +31,15 @@ public class mainCode extends LinearOpMode {
     private final Pose setToIntakeStart = poseFactory.of(38, 14, 70);
     private final Pose setToIntake = poseFactory.of(9, 25, -90);
     private final Pose intakeStart = poseFactory.of(9, 25, -90);
-    private final Pose intake = poseFactory.of(9, 8.25, -90);
-    private final Pose setShoot2Start = poseFactory.of(9, 8.25, -90);
-    private final Pose setShoot2 = poseFactory.of(38, 130, -65);
-    private final Pose setShoot2Control1 = poseFactory.of(34, 30, 0);
-    private final Pose setShoot2Control2 = poseFactory.of(34, 60, 0);
-    private final Pose setShoot2Control3 = poseFactory.of(30, 100, 0);
-    private final Pose setParkStart = poseFactory.of(38, 130, -65);
-    private final Pose setPark = poseFactory.of(8.5, 130, -90);
-    private final Pose park = poseFactory.of(8.5, 120, -90);
+    private final Pose intake = poseFactory.of(9, 19, -90);
+    private final Pose setShoot2Start = poseFactory.of(9, 19, -90);
+    private final Pose setShoot2 = poseFactory.of(28, 130, -65);
+    private final Pose setShoot2Control1 = poseFactory.of(24, 30, 0);
+    private final Pose setShoot2Control2 = poseFactory.of(20, 60, 0);
+    private final Pose setShoot2Control3 = poseFactory.of(20, 100, 0);
+    private final Pose setParkStart = poseFactory.of(28, 130, -65);
+    private final Pose setPark = poseFactory.of(10, 130, -90);
+    private final Pose park = poseFactory.of(10, 120, -90);
 
     // Autonomous routine
     public Command autoRoutine() {
